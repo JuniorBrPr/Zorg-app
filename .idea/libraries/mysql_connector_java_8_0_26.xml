@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="mysql-connector-java-8.0.26">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../../../Program Files (x86)/MySQL/Connector J 8.0/mysql-connector-java-8.0.26.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/pojo-utils-1.1.jar.zip!/" />
+      <root url="jar://$USER_HOME$/Downloads/dao-1.0.0.jar.zip!/" />
+      <root url="jar://$USER_HOME$/Downloads/jar_files.zip!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/Downloads/commons-dbutils-1.7-bin.zip!/commons-dbutils-1.7/apidocs" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>
