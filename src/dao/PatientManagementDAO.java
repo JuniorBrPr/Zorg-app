@@ -100,6 +100,26 @@ public class PatientManagementDAO {
         }
         return status;
     }
+    //update age
+    public int updateNickname(Patient patient, String nickname)
+    {
+        int status = 0;
+        try
+        {
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement("UPDATE patient SET nickname=? WHERE  patientId=?");
+            //set parameters of query here but using the values for the product object
+            ps.setString(1, patient.getNickname());
+            ps.setString(2, patient.getPatientId());
+            status = ps.executeUpdate();  //If successful status should return 1
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return status;
+    }
+
     //Delete patient in DB
     public int deletePatient(String patientId)
     {

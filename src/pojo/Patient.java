@@ -9,13 +9,12 @@ public class Patient
    String surName;
    String firstName;
    String nickname;
-   //start implementing age and ageCalculator
-
    LocalDate DateOfBirth;
    int age;
-
-   // Constructor
-
+   /*
+   double length;
+   double weight;
+   */
 
    public Patient(String patientId, String surName, String firstName, String nickname, LocalDate DateOfBirth, int age){
       this.patientId = patientId;
@@ -24,7 +23,8 @@ public class Patient
       this.nickname = nickname;
       this.DateOfBirth = DateOfBirth;
       this.age = age;
-
+      // this.length = length;
+      // this.weight = weight;
    }
    //pojo getters and setters
    public String getPatientId(){
@@ -46,10 +46,10 @@ public class Patient
       return firstName;
    }
    public String getNickname(){
-      return firstName;
+      return nickname;
    }
    public String setNickname(String nickname){
-      return firstName;
+      return nickname;
    }
 
    public LocalDate getDateOfBirth(){
@@ -64,7 +64,14 @@ public class Patient
    public int setAge(int age){
       return age;
    }
-
+   /*
+   public double getLength(){
+      return length;
+   }
+    public double setLength(double Length){
+      return length;
+   }
+    */
 
 
    // Write data to screen.

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class Admin {
    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
    static PatientManagementDAO dao = new PatientManagementDAO();
+   static ageCalculator aC = new ageCalculator();
    void menu() throws Exception {
       String option = "";
 
@@ -84,6 +85,7 @@ public class Admin {
 
    public static void addPatient() throws Exception
    {
+      ageCalculator ac = new ageCalculator();
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
@@ -106,7 +108,7 @@ public class Admin {
       String sDateOfBirth = br.readLine();
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
       LocalDate DateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
-      int age = ageCalculator.calculateAge(DateOfBirth);
+      int age = aC.calculateAge(DateOfBirth);
       //after user enters values, store them in a Product variable
       Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, age);
       int status = dao.addPatient(patient);
@@ -124,6 +126,7 @@ public class Admin {
    //this method asks practitioner to enter the ID and change attributes
    public static void updatePatient() throws Exception
    {
+
       //Add a function that let certain values stay the same
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
@@ -147,7 +150,7 @@ public class Admin {
       String sDateOfBirth = br.readLine();
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
       LocalDate DateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
-      int age = ageCalculator.calculateAge(DateOfBirth);
+      int age = aC.calculateAge(DateOfBirth);
       //after practitioner enters values, store them in a Patient variable
       Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, age);
       int status = dao.updatePatient(patient);
