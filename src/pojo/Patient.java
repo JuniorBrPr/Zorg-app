@@ -68,8 +68,14 @@ public class Patient
    public double getLength(){
       return length;
    }
-    public double setLength(double Length){
+    public double setLength(double length){
       return length;
+   }
+   public double getWeight(){
+      return weight;
+   }
+    public double setWeight(double weight){
+      return weight;
    }
     */
 

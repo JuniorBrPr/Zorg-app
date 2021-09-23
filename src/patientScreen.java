@@ -28,7 +28,7 @@ public class patientScreen {
                     break;
                 case "B":
 
-                    updateNickname(patient);
+                    updateNickname(dao.getPatientByid(patientId));
                     break;
                 case "Z":
                     option = "Z";
@@ -55,7 +55,9 @@ public class patientScreen {
         String surName = patient.getSurName();
         String firstName =patient.getFirstName();
         LocalDate DateOfBirth =patient.getDateOfBirth();
+        //Drop
         int age =patient.getAge();
+        //Add Length, Weight
         Patient patientU = new Patient(patientId, surName,firstName, nickname, DateOfBirth, age);
         int status = dao.updatePatient(patientU);
         if(status ==1 )

@@ -67,7 +67,10 @@ public class PatientManagementDAO {
             ps.setString(3, patient.getFirstName());
             ps.setString(4, patient.getNickname());
             ps.setDate(5, java.sql.Date.valueOf(patient.getDateOfBirth()));
+            //Maybe drop the age column
             ps.setInt(6, patient.getAge());
+            //ps.setDouble(7, patient.getLength());
+            //ps.setDouble(8, patient.getWeight());
             status = ps.executeUpdate();  //If successful status should return 1
         }
         catch(Exception e)
@@ -90,27 +93,12 @@ public class PatientManagementDAO {
             ps.setString(2, patient.getFirstName());
             ps.setString(3, patient.getNickname());
             ps.setDate(4, java.sql.Date.valueOf(patient.getDateOfBirth()));
+            //Drop age
             ps.setInt(5, patient.getAge());
+            //ps.setDouble(6, patient.getLength());
+            //ps.setDouble(7, patient.getWeight());
+            //ID should be index 8
             ps.setString(6, patient.getPatientId());
-            status = ps.executeUpdate();  //If successful status should return 1
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        return status;
-    }
-    //update age
-    public int updateNickname(Patient patient, String nickname)
-    {
-        int status = 0;
-        try
-        {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement ps = conn.prepareStatement("UPDATE patient SET nickname=? WHERE  patientId=?");
-            //set parameters of query here but using the values for the product object
-            ps.setString(1, patient.getNickname());
-            ps.setString(2, patient.getPatientId());
             status = ps.executeUpdate();  //If successful status should return 1
         }
         catch(Exception e)
