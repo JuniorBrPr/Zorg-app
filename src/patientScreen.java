@@ -10,10 +10,11 @@ public class patientScreen {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static PatientManagementDAO dao = new PatientManagementDAO();
     void menu(Patient patient) throws Exception {
+        int patientId = patient.getPatientId();
         String option = "";
         do {
-            String patientId = patient.getPatientId();
-            System.out.println("Welcome " + patient.getFirstName());
+
+            System.out.println("Welcome " + patient.getNickname());
             System.out.println("<><><><><><><><><><><><>");
             System.out.println("A. View your credentials");
             System.out.println("B. Change nickname");
@@ -51,7 +52,7 @@ public class patientScreen {
         System.out.println("Enter New Patient Nickname:");
         System.out.println("------------------------------------------------");
         String nickname = br.readLine();
-        String patientId = patient.getPatientId();
+        int patientId = patient.getPatientId();
         String surName = patient.getSurName();
         String firstName =patient.getFirstName();
         LocalDate DateOfBirth =patient.getDateOfBirth();

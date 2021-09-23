@@ -92,7 +92,7 @@ public class Admin {
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
       //Parse ID to int
-      String patientId = br.readLine();
+      int patientId = Integer.parseInt(br.readLine());
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient Surname:");
       System.out.println("------------------------------------------------");
@@ -141,7 +141,7 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
-      String patientId = br.readLine();
+      int patientId = Integer.parseInt(br.readLine());
       System.out.println("------------------------------------------------");
       System.out.println("Enter New Patient Surname:");
       System.out.println("------------------------------------------------");
@@ -189,7 +189,7 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
-      String patientId = br.readLine();
+      int patientId = Integer.parseInt(br.readLine());
       int status = dao.deletePatient(patientId);
       if(status == 1 )
       {
@@ -209,7 +209,7 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
-      String patientId = br.readLine();
+      int patientId = Integer.parseInt(br.readLine());
       Patient patient = dao.getPatientByid(patientId);
       displayPatient(patient);
       System.out.println("\n");

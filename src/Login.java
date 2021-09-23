@@ -13,7 +13,7 @@ public class Login {
         PatientManagementDAO dao = new PatientManagementDAO();
         String adminPassword = "BOSS";
         String adminId = "1";
-        String UserID = "";
+        int UserID = 0;
         String surName = "";
         String option = "";
         //login
@@ -31,8 +31,8 @@ public class Login {
         System.out.println("<><><><><><><><><><><><>");
         System.out.println("or enter F to Exit");
         System.out.println("<><><><><><><><><><><><>");
-        UserID = br.readLine();
-            if(UserID.toUpperCase().equals("F")){
+        UserID = Integer.parseInt(br.readLine());
+            if(String.valueOf(UserID).toUpperCase().equals("F")){
                 System.out.println("Goodbye!");
                 System.exit(0);
             }
@@ -52,7 +52,7 @@ public class Login {
         Patient patient = dao.getPatientByid(UserID);
         System.out.println("\n");
 
-            if (UserID.equals(adminId) && (surName.equals(adminPassword))) {
+            if (String.valueOf(UserID).equals(adminId) && (surName.equals(adminPassword))) {
                 Admin admin = new Admin();
                 admin.menu();
             }else if(surName.equals(patient.getSurName())){
@@ -62,7 +62,7 @@ public class Login {
             System.out.println("Invalid credentials!");
             }
 
-        }while(!UserID.toUpperCase().equals("F") || !surName.toUpperCase().equals("F"));
+        }while(!String.valueOf(UserID).toUpperCase().equals("F") || !surName.toUpperCase().equals("F"));
 
 
 

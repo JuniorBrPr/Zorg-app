@@ -1,8 +1,5 @@
 package calculators;
 
-import java.time.LocalDate;
-import java.time.Period;
-
 public class bmiCalculator {
     public double calculateBMI(double length, double weight) {
         double bmi = (100*100*weight)/(length*length);

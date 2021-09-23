@@ -1,11 +1,10 @@
 package pojo;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 public class Patient
 {
-   String patientId;
+   int patientId;
    String surName;
    String firstName;
    String nickname;
@@ -14,7 +13,7 @@ public class Patient
    double weight;
 
 
-   public Patient(String patientId, String surName, String firstName, String nickname, LocalDate DateOfBirth, double length, double weight){
+   public Patient(int patientId, String surName, String firstName, String nickname, LocalDate DateOfBirth, double length, double weight){
       this.patientId = patientId;
       this.surName = surName;
       this.firstName = firstName;
@@ -24,10 +23,10 @@ public class Patient
       this.weight = weight;
    }
    //pojo getters and setters
-   public String getPatientId(){
+   public int getPatientId(){
       return patientId;
    }
-   public String setPatientId(String patientId){
+   public int setPatientId(int patientId){
       return patientId;
    }
    public String getSurName(){
