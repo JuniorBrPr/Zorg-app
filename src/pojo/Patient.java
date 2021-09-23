@@ -10,21 +10,18 @@ public class Patient
    String firstName;
    String nickname;
    LocalDate DateOfBirth;
-   int age;
-   /*
    double length;
    double weight;
-   */
 
-   public Patient(String patientId, String surName, String firstName, String nickname, LocalDate DateOfBirth, int age){
+
+   public Patient(String patientId, String surName, String firstName, String nickname, LocalDate DateOfBirth, double length, double weight){
       this.patientId = patientId;
       this.surName = surName;
       this.firstName = firstName;
       this.nickname = nickname;
       this.DateOfBirth = DateOfBirth;
-      this.age = age;
-      // this.length = length;
-      // this.weight = weight;
+      this.length = length;
+      this.weight = weight;
    }
    //pojo getters and setters
    public String getPatientId(){
@@ -51,20 +48,12 @@ public class Patient
    public String setNickname(String nickname){
       return nickname;
    }
-
    public LocalDate getDateOfBirth(){
       return DateOfBirth;
    }
    public LocalDate setDateOfBirth(LocalDate DateOfBirth){
       return DateOfBirth;
    }
-   public int getAge(){
-      return age;
-   }
-   public int setAge(int age){
-      return age;
-   }
-   /*
    public double getLength(){
       return length;
    }
@@ -77,9 +66,4 @@ public class Patient
     public double setWeight(double weight){
       return weight;
    }
-    */
-
-
-   // Write data to screen.
-
 }

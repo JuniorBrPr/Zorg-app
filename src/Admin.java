@@ -1,4 +1,5 @@
 import calculators.ageCalculator;
+import calculators.bmiCalculator;
 import pojo.Patient;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class Admin {
    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
    static PatientManagementDAO dao = new PatientManagementDAO();
    static ageCalculator aC = new ageCalculator();
+   static bmiCalculator bC = new bmiCalculator();
    void menu() throws Exception {
       String option = "";
 
@@ -75,7 +77,7 @@ public class Admin {
       List<Patient> patientList = dao.getAllPatients();
       for(Patient patient: patientList)
       {
-         //display product one by one
+         //display patient one by one
          displayPatient(patient);
       }
       System.out.println("-----------------------------------------------");
@@ -85,11 +87,11 @@ public class Admin {
 
    public static void addPatient() throws Exception
    {
-      //Move the calculator to the displayPatient class
-      ageCalculator ac = new ageCalculator();
+      //Remove ID assignment and change ID datatype to Int
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
+      //Parse ID to int
       String patientId = br.readLine();
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient Surname:");
@@ -107,28 +109,18 @@ public class Admin {
       System.out.println("Enter Patient DateOfBirth: (yyyy/MM/dd)");
       System.out.println("------------------------------------------------");
       String sDateOfBirth = br.readLine();
-      //Ask length
-      /*
       System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient Length:");
+      System.out.println("Enter Patient Length (In CM):");
       System.out.println("------------------------------------------------");
       double length = Double.parseDouble(br.readLine());
       System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient Weight:");
+      System.out.println("Enter Patient Weight (In KG's):");
       System.out.println("------------------------------------------------");
       double weight = Double.parseDouble(br.readLine());
-       */
-      //Ask Weight
-      //Put the values in the Patient object
-
-
-
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
       LocalDate DateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
-      //Drop this
-      int age = aC.calculateAge(DateOfBirth);
       //after user enters values, store them in a Product variable
-      Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, age);
+      Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, length, weight);
       int status = dao.addPatient(patient);
       if(status ==1 )
       {
@@ -169,7 +161,6 @@ public class Admin {
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
       LocalDate DateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
       //Length and Weight updater
-      /*
       System.out.println("------------------------------------------------");
       System.out.println("Enter new Patient Length:");
       System.out.println("------------------------------------------------");
@@ -178,13 +169,8 @@ public class Admin {
       System.out.println("Enter new Patient Weight:");
       System.out.println("------------------------------------------------");
       double weight = Double.parseDouble(br.readLine());
-       */
-      //Drop this
-      int age = aC.calculateAge(DateOfBirth);
       //after practitioner enters values, store them in a Patient variable
-      //Still have to put length and weight in here
-      /*length, weight*/
-      Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, age);
+      Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, length, weight);
       int status = dao.updatePatient(patient);
       if(status ==1 )
       {
@@ -231,20 +217,21 @@ public class Admin {
 
    public static void displayPatient(Patient patient)
    {
+      //Maybe let the age be calculated here
+      int age = aC.calculateAge(patient.getDateOfBirth());
+      double bmi = bC.calculateBMI(patient.getLength(), patient.getWeight());
+      String bmiCategory = bC.bmiCategory(bmi);
       System.out.println("Patient ID: "+patient.getPatientId());
       System.out.println("Patient Surname: "+patient.getSurName());
       System.out.println("Patient Firstname: "+patient.getFirstName());
       System.out.println("Patient Nickname: "+patient.getNickname());
       System.out.println("Patient DateOfBirth: "+patient.getDateOfBirth());
-      //Maybe let the age be calculated here
-      System.out.println("Patient Age: "+patient.getAge());
-      //Add length, Weight and BMI
-      /*
+      System.out.println("Patient Age: "+age);
       System.out.println("Patient Length: "+patient.getLength());
-      System.out.println("Patient Length: "+patient.getWeight());
-      Calculate BMI here and print it
-      Still have to make BMI calculator
-       */
+      System.out.println("Patient Weight: "+patient.getWeight());
+      System.out.println("Patient BMI: "+bmi);
+      System.out.println("Patient BMI Category: "+bmiCategory);
+      //Calculate BMI here and print it
       System.out.println("\n");
    }
 

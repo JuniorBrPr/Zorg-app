@@ -19,7 +19,7 @@ public class PatientManagementDAO {
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * from patient");
             while (rs.next()){
-                Patient patient = new Patient(rs.getString("patientId"), rs.getString("surName"), rs.getString("firstName"), rs.getString("nickname"), rs.getObject("DateOfBirth", LocalDate.class), rs.getInt("age"));
+                Patient patient = new Patient(rs.getString("patientId"), rs.getString("surName"), rs.getString("firstName"), rs.getString("nickname"), rs.getObject("DateOfBirth", LocalDate.class), rs.getDouble("length"), rs.getDouble("weight"));
                 patientList.add(patient);
             }
             DBUtil.closeConnection(conn);  //Close DB connection
@@ -44,7 +44,7 @@ public class PatientManagementDAO {
             //iterate through results
             while(rs.next())
             {
-                patient = new Patient(rs.getString("patientId"), rs.getString("surName"), rs.getString("firstName"), rs.getString("nickname"), rs.getObject("DateOfBirth", LocalDate.class), rs.getInt("age"));
+                patient = new Patient(rs.getString("patientId"), rs.getString("surName"), rs.getString("firstName"), rs.getString("nickname"), rs.getObject("DateOfBirth", LocalDate.class), rs.getDouble("length"), rs.getDouble("weight"));
             }
         }
         catch(Exception e)
@@ -60,17 +60,15 @@ public class PatientManagementDAO {
         try
         {
             Connection conn = DBUtil.getConnection();
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO patient VALUES(?,?,?,?,?,?)");
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO patient VALUES(?,?,?,?,?,?,?)");
             //set parameters of query here but using the values for the product object
             ps.setString(1, patient.getPatientId());
             ps.setString(2, patient.getSurName());
             ps.setString(3, patient.getFirstName());
             ps.setString(4, patient.getNickname());
             ps.setDate(5, java.sql.Date.valueOf(patient.getDateOfBirth()));
-            //Maybe drop the age column
-            ps.setInt(6, patient.getAge());
-            //ps.setDouble(7, patient.getLength());
-            //ps.setDouble(8, patient.getWeight());
+            ps.setDouble(6, patient.getLength());
+            ps.setDouble(7, patient.getWeight());
             status = ps.executeUpdate();  //If successful status should return 1
         }
         catch(Exception e)
@@ -87,18 +85,15 @@ public class PatientManagementDAO {
         try
         {
             Connection conn = DBUtil.getConnection();
-            PreparedStatement ps = conn.prepareStatement("UPDATE patient SET surName=?, firstName=?, nickname=?, DateOfBirth=?, age=? WHERE  patientId=?");
+            PreparedStatement ps = conn.prepareStatement("UPDATE patient SET surName=?, firstName=?, nickname=?, DateOfBirth=?, length=?, weight=? WHERE  patientId=?");
             //set parameters of query here but using the values for the product object
             ps.setString(1, patient.getSurName());
             ps.setString(2, patient.getFirstName());
             ps.setString(3, patient.getNickname());
             ps.setDate(4, java.sql.Date.valueOf(patient.getDateOfBirth()));
-            //Drop age
-            ps.setInt(5, patient.getAge());
-            //ps.setDouble(6, patient.getLength());
-            //ps.setDouble(7, patient.getWeight());
-            //ID should be index 8
-            ps.setString(6, patient.getPatientId());
+            ps.setDouble(5, patient.getLength());
+            ps.setDouble(6, patient.getWeight());
+            ps.setString(7, patient.getPatientId());
             status = ps.executeUpdate();  //If successful status should return 1
         }
         catch(Exception e)

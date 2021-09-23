@@ -55,10 +55,9 @@ public class patientScreen {
         String surName = patient.getSurName();
         String firstName =patient.getFirstName();
         LocalDate DateOfBirth =patient.getDateOfBirth();
-        //Drop
-        int age =patient.getAge();
-        //Add Length, Weight
-        Patient patientU = new Patient(patientId, surName,firstName, nickname, DateOfBirth, age);
+        double length = patient.getLength();
+        double weight = patient.getWeight();
+        Patient patientU = new Patient(patientId, surName,firstName, nickname, DateOfBirth, length, weight);
         int status = dao.updatePatient(patientU);
         if(status ==1 )
         {
