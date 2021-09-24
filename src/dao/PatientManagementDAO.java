@@ -62,7 +62,7 @@ public class PatientManagementDAO {
             Connection conn = DBUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement("INSERT INTO patient VALUES(?,?,?,?,?,?,?)");
             //set parameters of query here but using the values for the product object
-            ps.setInt(1, patient.getPatientId());
+            ps.setInt(1,patient.getPatientId());
             ps.setString(2, patient.getSurName());
             ps.setString(3, patient.getFirstName());
             ps.setString(4, patient.getNickname());
