@@ -1,6 +1,7 @@
 import calculators.ageCalculator;
 import calculators.bmiCalculator;
 import pojo.Patient;
+import pojo.medication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,12 +10,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import dao.PatientManagementDAO;
+import dao.medicationManagementDAO;
 import java.time.LocalDate;
+
+import static java.lang.Integer.parseInt;
 
 
 public class Admin {
    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
    static PatientManagementDAO dao = new PatientManagementDAO();
+   static medicationManagementDAO medDao = new medicationManagementDAO();
    static ageCalculator aC = new ageCalculator();
    static bmiCalculator bC = new bmiCalculator();
    void menu() throws Exception {
@@ -29,6 +34,7 @@ public class Admin {
          System.out.println("C. Update Patient");
          System.out.println("D. Delete Patient");
          System.out.println("E. Search Patient");
+         System.out.println("G. Add Medication");
          System.out.println("F. Exit");
          System.out.println("<><><><><><><><><><><><>");
          System.out.println("Enter an option");
@@ -56,6 +62,10 @@ public class Admin {
 
             case "E":
                searchPatient();
+               break;
+
+            case "G":
+               addMedication();
                break;
 
             case "F":
@@ -92,7 +102,7 @@ public class Admin {
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
       //Parse ID to int
-      int patientId = Integer.parseInt(br.readLine());
+      int patientId = parseInt(br.readLine());
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient Surname:");
       System.out.println("------------------------------------------------");
@@ -132,6 +142,38 @@ public class Admin {
       }
       System.out.println("\n");
    }
+   //Add medication
+   public static void addMedication() throws Exception
+   {
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter Medication name:");
+      System.out.println("------------------------------------------------");
+      String medName = br.readLine();
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter medication dosage:");
+      System.out.println("------------------------------------------------");
+      String dosage = br.readLine();
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter medication manufacturer:");
+      System.out.println("------------------------------------------------");
+      String manufacturer = br.readLine();
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter PatientId");
+      System.out.println("------------------------------------------------");
+      int patientId = parseInt(br.readLine());
+      //after user enters values, store them in a Product variable
+      medication medication = new medication(medName, dosage,manufacturer, patientId);
+      int status = medDao.addMed(medication);
+      if(status ==1 )
+      {
+         System.out.println("Medication added successfully");
+      }
+      else
+      {
+         System.out.println("ERROR while adding medication");
+      }
+      System.out.println("\n");
+   }
 
    //this method asks practitioner to enter the ID and change attributes
    public static void updatePatient() throws Exception
@@ -141,7 +183,7 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
-      int patientId = Integer.parseInt(br.readLine());
+      int patientId = parseInt(br.readLine());
       System.out.println("------------------------------------------------");
       System.out.println("Enter New Patient Surname:");
       System.out.println("------------------------------------------------");
@@ -189,7 +231,7 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
-      int patientId = Integer.parseInt(br.readLine());
+      int patientId = parseInt(br.readLine());
       int status = dao.deletePatient(patientId);
       if(status == 1 )
       {
@@ -209,7 +251,7 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
-      int patientId = Integer.parseInt(br.readLine());
+      int patientId = parseInt(br.readLine());
       Patient patient = dao.getPatientByid(patientId);
       displayPatient(patient);
       System.out.println("\n");

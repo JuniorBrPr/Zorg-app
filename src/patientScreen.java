@@ -4,7 +4,6 @@ import pojo.Patient;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class patientScreen {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
