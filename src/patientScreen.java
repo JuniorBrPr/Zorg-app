@@ -9,12 +9,14 @@ import java.time.format.DateTimeFormatter;
 public class patientScreen {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static PatientManagementDAO dao = new PatientManagementDAO();
+    static Patient user;
     void menu(Patient patient) throws Exception {
         int patientId = patient.getPatientId();
+        user = dao.getPatientByid(patientId);
         String option = "";
         do {
 
-            System.out.println("Welcome " + patient.getNickname());
+            System.out.println("Welcome " + user.getNickname());
             System.out.println("<><><><><><><><><><><><>");
             System.out.println("A. View your credentials");
             System.out.println("B. Change nickname");
@@ -59,6 +61,7 @@ public class patientScreen {
         double length = patient.getLength();
         double weight = patient.getWeight();
         Patient patientU = new Patient(patientId, surName,firstName, nickname, DateOfBirth, length, weight);
+        user = patientU;
         int status = dao.updatePatient(patientU);
         if(status ==1 )
         {
