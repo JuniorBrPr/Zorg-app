@@ -19,29 +19,23 @@ public class patientScreen {
             System.out.println("<><><><><><><><><><><><>");
             System.out.println("A. View your credentials");
             System.out.println("B. Change nickname");
+            System.out.println("C. View Medication Data");
             System.out.println("Z. LogOut");
             System.out.println("F. Exit");
             option = br.readLine();
             System.out.println("\n");
             switch (option.toUpperCase()) {
-                case "A":
-                    //By calling it this way, the nickname automatically updates after a change
-                    Admin.displayPatient(dao.getPatientByid(patientId));
-                    break;
-                case "B":
-
-                    updateNickname(dao.getPatientByid(patientId));
-                    break;
-                case "Z":
-                    option = "Z";
-                    break;
-                case "F":
+                case "A" ->
+                        //By calling it this way, the nickname automatically updates after a change
+                        Admin.displayPatient(dao.getPatientByid(patientId));
+                case "B" -> updateNickname(dao.getPatientByid(patientId));
+                case "C" -> Admin.viewMedications(dao.getPatientByid(patientId));
+                case "Z" -> option = "Z";
+                case "F" -> {
                     System.out.println("Goodbye!");
                     System.exit(0);
-                    break;
-                default:
-                    System.out.println("Invalid Option! Please try again!!");
-                    break;
+                }
+                default -> System.out.println("Invalid Option! Please try again!!");
             }
         } while (!option.equals("Z"));
         System.out.println("\n");

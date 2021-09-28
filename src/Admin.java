@@ -5,9 +5,7 @@ import pojo.Patient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import dao.PatientManagementDAO;
 import dao.medicationManagementDAO;
@@ -23,7 +21,7 @@ public class Admin {
    static ageCalculator aC = new ageCalculator();
    static bmiCalculator bC = new bmiCalculator();
    void menu() throws Exception {
-      String option = "";
+      String option;
 
       do
       {
@@ -45,47 +43,20 @@ public class Admin {
          option = br.readLine();
          System.out.println("\n");
 
-         switch(option.toUpperCase())
-         {
-            case "A":
-               viewPatients();
-               break;
-
-            case "B":
-               addPatient();
-               break;
-
-            case "C":
-               updatePatient();
-               break;
-
-            case "D":
-               deletePatient();
-               break;
-
-            case "E":
-               searchPatient();
-               break;
-
-            case "G":
-               addMedication();
-               break;
-
-            case "H":
-               viewPatientsAndMeds();
-               break;
-            case "I":
-               deleteMedication();
-               break;
-
-            case "F":
+         switch (option.toUpperCase()) {
+            case "A" -> viewPatients();
+            case "B" -> addPatient();
+            case "C" -> updatePatient();
+            case "D" -> deletePatient();
+            case "E" -> searchPatient();
+            case "G" -> addMedication();
+            case "H" -> viewPatientsAndMeds();
+            case "I" -> deleteMedication();
+            case "F" -> {
                System.out.println("Goodbye!");
                System.exit(0);
-               break;
-
-            default:
-               System.out.println("Invalid Option! Please try again!!");
-               break;
+            }
+            default -> System.out.println("Invalid Option! Please try again!!");
          }
       }while(!option.equals("F"));
    }
@@ -121,14 +92,6 @@ public class Admin {
 
    public static void addPatient() throws Exception
    {
-      //Remove ID assignment and change ID datatype to Int
-      /*
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient ID:");
-      System.out.println("------------------------------------------------");
-      //Parse ID to int
-      int patientId = parseInt(br.readLine());
-       */
       int patientId = 0;
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient Surname:");
@@ -143,7 +106,7 @@ public class Admin {
       System.out.println("------------------------------------------------");
       String nickname = br.readLine();
       System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient DateOfBirth: (yyyy/MM/dd)");
+      System.out.println("Enter Patient DateOfBirth: (yyyy-MM-dd)");
       System.out.println("------------------------------------------------");
       String sDateOfBirth = br.readLine();
       System.out.println("------------------------------------------------");
@@ -154,7 +117,7 @@ public class Admin {
       System.out.println("Enter Patient Weight (In KG's):");
       System.out.println("------------------------------------------------");
       double weight = Double.parseDouble(br.readLine());
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
       LocalDate DateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
       //after user enters values, store them in a Product variable
       Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, length, weight);
@@ -203,43 +166,81 @@ public class Admin {
       System.out.println("\n");
    }
 
+   public static String attributeChanger(String originalValue, String option, String attributeName) throws IOException {
+      String value = "";
+
+      switch (option.toUpperCase()) {
+         case "A" -> value = originalValue;
+         case "B" -> {
+            System.out.println("Enter new " + attributeName + ":");
+            value = br.readLine();
+         }
+         default -> System.out.println("Invalid Option! Please try again!!");
+      }
+      return value;
+   }
+
+   public static void optionPrinter(String attributeName){
+      System.out.println("Enter A to keep current "+attributeName);
+      System.out.println("Enter B to change "+attributeName);
+      System.out.println("------------------------------------------------");
+   }
+
    //this method asks practitioner to enter the ID and change attributes
    public static void updatePatient() throws Exception
    {
-
       //Add a function that let certain values stay the same
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
       int patientId = parseInt(br.readLine());
+      //Store original patient attributes
+      Patient patientOriginalData = dao.getPatientByid(patientId);
 
       System.out.println("------------------------------------------------");
-      System.out.println("Enter New Patient Surname:");
+      System.out.println("Current Patient Surname: "+ patientOriginalData.getSurName());
       System.out.println("------------------------------------------------");
-      String surName = br.readLine();
+      optionPrinter("Surname");
+      String option = br.readLine();
+      String surName = attributeChanger(patientOriginalData.getSurName(), option, "Surname");
+
       System.out.println("------------------------------------------------");
-      System.out.println("Enter New Patient First Name:");
+      System.out.println("Current Patient First Name: "+patientOriginalData.getFirstName());
       System.out.println("------------------------------------------------");
-      String firstName = br.readLine();
+      optionPrinter("First Name");
+      option = br.readLine();
+      String firstName = attributeChanger(patientOriginalData.getFirstName(), option, "First Name");
+
       System.out.println("------------------------------------------------");
-      System.out.println("Enter New Patient Nickname:");
+      System.out.println("Current Patient Nickname: "+patientOriginalData.getNickname());
       System.out.println("------------------------------------------------");
-      String nickname = br.readLine();
+      optionPrinter("Nickname");
+      option = br.readLine();
+      String nickname = attributeChanger(patientOriginalData.getNickname(), option, "Nickname");
+
       System.out.println("------------------------------------------------");
-      System.out.println("Enter New Patient DateOfBirth: (yyyy/MM/dd)");
+      System.out.println("Current Patient DateOfBirth (yyyy-MM-dd): "+patientOriginalData.getDateOfBirth());
       System.out.println("------------------------------------------------");
-      String sDateOfBirth = br.readLine();
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+      optionPrinter("DateOfBirth: (yyyy-MM-dd)");
+      option = br.readLine();
+      String sDateOfBirth = attributeChanger(String.valueOf(patientOriginalData.getDateOfBirth()), option, "DateOfBirth: (yyyy-MM-dd)");
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
       LocalDate DateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
+
       //Length and Weight updater
       System.out.println("------------------------------------------------");
-      System.out.println("Enter new Patient Length:");
+      System.out.println("Current Patient Length: "+patientOriginalData.getLength());
       System.out.println("------------------------------------------------");
-      double length = Double.parseDouble(br.readLine());
+      optionPrinter("Length");
+      option = br.readLine();
+      double length = Double.parseDouble(attributeChanger(String.valueOf(patientOriginalData.getLength()), option, "Length"));
+
       System.out.println("------------------------------------------------");
-      System.out.println("Enter new Patient Weight:");
+      System.out.println("Current Patient Weight: "+patientOriginalData.getWeight());
       System.out.println("------------------------------------------------");
-      double weight = Double.parseDouble(br.readLine());
+      optionPrinter("Weight");
+      option = br.readLine();
+      double weight = Double.parseDouble(attributeChanger(String.valueOf(patientOriginalData.getWeight()), option, "Weight"));
       //after practitioner enters values, store them in a Patient variable
       Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, length, weight);
       int status = dao.updatePatient(patient);
@@ -254,6 +255,7 @@ public class Admin {
       System.out.println("\n");
 
    }
+
 
    public static void deletePatient() throws Exception
    {
