@@ -62,6 +62,7 @@ public class Admin {
          }
       }while(!option.equals("F"));
    }
+
    public static void viewPatients()
    {
       System.out.println("-----------------------------------------------");
@@ -74,8 +75,22 @@ public class Admin {
       }
       System.out.println("-----------------------------------------------");
       System.out.println("\n");
-
    }
+   public static void viewPatientIds()
+   {
+      System.out.println("-----------------------------------------------");
+      //Get all the patients from the DAO and store them
+      List<Patient> patientIdList = dao.getAllPatients();
+      for(Patient patient: patientIdList)
+      {
+
+         displayPatientId(patient);
+      }
+      System.out.println("-----------------------------------------------");
+      System.out.println("\n");
+   }
+
+
    public static void viewPatientsAndMeds()
    {
       System.out.println("-----------------------------------------------");
@@ -192,8 +207,9 @@ public class Admin {
    public static void updatePatient() throws Exception
    {
       //Add a function that let certain values stay the same
+      viewPatientIds();
       System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient ID:");
+      System.out.println("Enter the ID of the Patient you would like to update:");
       System.out.println("------------------------------------------------");
       int patientId = parseInt(br.readLine());
       //Store original patient attributes
@@ -310,8 +326,9 @@ public class Admin {
 
    public static void deletePatient() throws Exception
    {
+      viewPatientIds();
       System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient ID:");
+      System.out.println("Enter the ID of the Patient you would like to delete:");
       System.out.println("------------------------------------------------");
       int patientId = parseInt(br.readLine());
       int status = dao.deletePatient(patientId);
@@ -328,8 +345,15 @@ public class Admin {
    }
    public static void deleteMedication() throws Exception
    {
+      viewPatientIds();
       System.out.println("------------------------------------------------");
-      System.out.println("Enter Medication ID:");
+      System.out.println("Enter Patient ID who's Medication(s) data you would like to delete:");
+      System.out.println("------------------------------------------------");
+      int patientId = parseInt(br.readLine());
+      //View patient medList
+      viewMedications(dao.getPatientByid(patientId));
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter the Medication ID of the Medication you would like to delete:");
       System.out.println("------------------------------------------------");
       int medId = parseInt(br.readLine());
       int status = medDao.deleteMedication(medId);
@@ -348,8 +372,9 @@ public class Admin {
    //ask user for productId and use dao method to display product
    public static void searchPatient() throws Exception
    {
+      viewPatientIds();
       System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient ID:");
+      System.out.println("Enter the ID of the Patient you would like to search:");
       System.out.println("------------------------------------------------");
       int patientId = parseInt(br.readLine());
       Patient patient = dao.getPatientByid(patientId);
@@ -378,6 +403,11 @@ public class Admin {
       System.out.println("Patient BMI Category: "+bmiCategory);
 
       System.out.println("\n");
+   }
+   public static void displayPatientId(Patient patient)
+   {
+      System.out.println("Patient ID: "+patient.getPatientId() +", Surname: "+patient.getSurName()+", Firstname: "+patient.getFirstName());
+      System.out.println("-----------------------------------------------");
    }
 
    public static void displayMedication(Medication medication){
