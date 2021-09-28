@@ -14,18 +14,18 @@ public class Login {
         //login
         do
         {
-            System.out.println("<><><><><><><><><><><><><><><><><><><>");
-            System.out.println("<><><><><><><><><><><><><><><><><><><>");
-            System.out.println("<>Welcome to the uZorg application!<><");
-            System.out.println("<><><><><><><><><><><><><><><><><><><>");
-            System.out.println("<><><><><><><><><><><><><><><><><><><>");
-            System.out.println("<>Enter UserID and  Password(surname)<");
-            System.out.println("<><><><><><><><><><><><><><><><><><><>");
-            System.out.println("<><><><><>||Enter UserID||<><><><><><>");
-            System.out.println("<><><><>!MUST BE A VALID ID!<><><><><>");
-            System.out.println("<><><><><><><><><><><><><><><><><><><>");
-            System.out.println("<><><><>or enter F to Exit<><><><><><>");
-            System.out.println("<><><><><><><><><><><><><><><><><><><>");
+            System.out.println("--------------------------------------");
+            System.out.println("|                                    |");
+            System.out.println("| Welcome to the uZorg application!  |");
+            System.out.println("|                                    |");
+            System.out.println("|                                    |");
+            System.out.println("|           Enter UserID             |");
+            System.out.println("|                                    |");
+            System.out.println("|                                    |");
+            System.out.println("|        !MUST BE A VALID ID!        |");
+            System.out.println("|                                    |");
+            System.out.println("|        or enter F to Exit          |");
+            System.out.println("--------------------------------------");
             UserID = Integer.parseInt(br.readLine());
             if(String.valueOf(UserID).toUpperCase().equals("F")){
                 System.out.println("Goodbye!");
