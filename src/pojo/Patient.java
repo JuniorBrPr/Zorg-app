@@ -1,7 +1,6 @@
 package pojo;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class Patient
 {
@@ -12,15 +11,6 @@ public class Patient
    LocalDate DateOfBirth;
    double length;
    double weight;
-   //int[] meds;
-   //Dit zou kunnen werken. Dan bewaar ik de ID's van de medicatie van een patient
-
-   //Medicijnen implementen. (Mischien een extra table maken in de DB en daar medicijnen in opslaan en dan met een key oproepen als een patient die medicatie heeft.
-   //Zou dus ook een medicijn class moeten maken.
-   //Attributes zouden dingen zoals werking, dosis, fabrikant, naam etc.
-   //Succes buddy
-   //Zou een aangepaste versie van de SearchPatient by ID kunnen gebruiken om medicatie op te zoeken in een andere table
-
 
 
    public Patient(int patientId, String surName, String firstName, String nickname, LocalDate DateOfBirth, double length, double weight){
@@ -77,4 +67,13 @@ public class Patient
     public double setWeight(double weight){
       return weight;
    }
+/*
+   public ArrayList<Integer> getMedId() {
+      return medId;
+   }
+   public Integer setMedId(Integer medId){
+      return medId;
+   }
+
+ */
 }

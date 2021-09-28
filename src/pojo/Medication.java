@@ -1,6 +1,6 @@
 package pojo;
 
-public class medication {
+public class Medication {
     int medId;
     String medName;
     String dosage;
@@ -8,7 +8,7 @@ public class medication {
     int patientId;
 
 
-    public medication(/*int medId, */String medName, String dosage, String manufacturer, int patientId) {
+    public Medication(/*int medId, */String medName, String dosage, String manufacturer, int patientId) {
         //this.medId = medId;
         this.medName = medName;
         this.dosage = dosage;

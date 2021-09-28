@@ -1,7 +1,7 @@
 import calculators.ageCalculator;
 import calculators.bmiCalculator;
+import pojo.Medication;
 import pojo.Patient;
-import pojo.medication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,7 +34,9 @@ public class Admin {
          System.out.println("C. Update Patient");
          System.out.println("D. Delete Patient");
          System.out.println("E. Search Patient");
-         System.out.println("G. Add Medication");
+         System.out.println("-----------------");
+         System.out.println("G. Prescribe Medication to Patient");
+         System.out.println("H. View Patients and their Medication(s)");
          System.out.println("F. Exit");
          System.out.println("<><><><><><><><><><><><>");
          System.out.println("Enter an option");
@@ -68,6 +70,10 @@ public class Admin {
                addMedication();
                break;
 
+            case "H":
+               viewPatientsAndMeds();
+               break;
+
             case "F":
                System.out.println("Goodbye!");
                System.exit(0);
@@ -82,13 +88,27 @@ public class Admin {
    public static void viewPatients()
    {
       System.out.println("-----------------------------------------------");
-
       //Get all the patients from the DAO and store them
       List<Patient> patientList = dao.getAllPatients();
       for(Patient patient: patientList)
       {
          //display patient one by one
          displayPatient(patient);
+      }
+      System.out.println("-----------------------------------------------");
+      System.out.println("\n");
+
+   }
+   public static void viewPatientsAndMeds()
+   {
+      System.out.println("-----------------------------------------------");
+      //Get all the patients from the DAO and store them
+      List<Patient> patientList = dao.getAllPatients();
+      for(Patient patient: patientList)
+      {
+         //display patient and their medication one by one
+         displayPatient(patient);
+         viewMedications(patient);
       }
       System.out.println("-----------------------------------------------");
       System.out.println("\n");
@@ -161,8 +181,8 @@ public class Admin {
       System.out.println("Enter PatientId");
       System.out.println("------------------------------------------------");
       int patientId = parseInt(br.readLine());
-      //after user enters values, store them in a Product variable
-      medication medication = new medication(medName, dosage,manufacturer, patientId);
+      //after user enters values, store them in a Medication variable
+      Medication medication = new Medication(medName, dosage,manufacturer, patientId);
       int status = medDao.addMed(medication);
       if(status ==1 )
       {
@@ -254,6 +274,7 @@ public class Admin {
       int patientId = parseInt(br.readLine());
       Patient patient = dao.getPatientByid(patientId);
       displayPatient(patient);
+      viewMedications(patient);
       System.out.println("\n");
    }
 
@@ -263,6 +284,8 @@ public class Admin {
       int age = aC.calculateAge(patient.getDateOfBirth());
       double bmi = bC.calculateBMI(patient.getLength(), patient.getWeight());
       String bmiCategory = bC.bmiCategory(bmi);
+      System.out.println("-----------------------------------------------");
+      System.out.println("Patient credentials= ");
       System.out.println("Patient ID: "+patient.getPatientId());
       System.out.println("Patient Surname: "+patient.getSurName());
       System.out.println("Patient Firstname: "+patient.getFirstName());
@@ -273,10 +296,25 @@ public class Admin {
       System.out.println("Patient Weight: "+patient.getWeight());
       System.out.println("Patient BMI: "+bmi);
       System.out.println("Patient BMI Category: "+bmiCategory);
-      //Calculate BMI here and print it
+
       System.out.println("\n");
    }
 
+   public static void displayMedication(Medication medication){
+      System.out.println("Medication name: "+medication.getMedName());
+      System.out.println("Medication dosage: "+medication.getDosage());
+      System.out.println("Medication manufacturer: "+medication.getManufacturer());
+   }
 
-
+   public static void viewMedications(Patient patient){
+      System.out.println("Patient prescription(s)=");
+      List<Medication> medicationList = medDao.getAllMeds(patient.getPatientId());
+      for(Medication medication: medicationList)
+      {
+         //display medication one by one
+         displayMedication(medication);
+         System.out.println("\n");
+      }
+      System.out.println("-----------------------------------------------");
+   }
 }

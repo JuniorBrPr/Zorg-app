@@ -1,7 +1,8 @@
 package dao;
 
 import dbutil.DBUtil;
-import pojo.medication;
+import pojo.Medication;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,15 +15,18 @@ public class medicationManagementDAO {
     //CRUD Operations
     //DB list maker
     //Maybe only by patientId
-    public List<medication> getAllMeds(){
-        List<medication> medicationList = new ArrayList<medication>();
+    public List<Medication> getAllMeds(int patientId){
+        List<Medication> medicationList = new ArrayList<Medication>();
         try{
             Connection conn = DBUtil.getConnection();
             Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * from medication");
+            ResultSet rs = st.executeQuery("SELECT * from medication ");
             while (rs.next()){
-                medication medication = new medication(/*rs.getInt("medId"), */rs.getString("medName"), rs.getString("dosage"), rs.getString("manufacturer"), rs.getInt("patientId"));
-                medicationList.add(medication);
+                Medication medication = new Medication(rs.getString("medName"), rs.getString("dosage"), rs.getString("manufacturer"), rs.getInt("patientId"));
+                if(medication.getPatientId() == patientId){
+                    medicationList.add(medication);
+                }
+
             }
             DBUtil.closeConnection(conn);  //Close DB connection
         }
@@ -35,7 +39,7 @@ public class medicationManagementDAO {
     }
     //Methods
     //Add medication to DB
-    public int addMed(medication medication){
+    public int addMed(Medication medication){
         int status = 0;
         try
         {
@@ -73,8 +77,8 @@ public class medicationManagementDAO {
         return status;
     }
     //Get medication by ID
-    public medication getMedicationByPatientId(int patientId) {
-        medication medication = null;
+    public Medication getMedicationByPatientId(int patientId) {
+        Medication medication = null;
         try
         {
             Connection conn = DBUtil.getConnection();
@@ -84,7 +88,7 @@ public class medicationManagementDAO {
             //iterate through results
             while(rs.next())
             {
-                medication = new medication(/*rs.getInt("medId"),*/rs.getString("medName"), rs.getString("dosage"), rs.getString("manufacturer"), rs.getInt("patientId"));
+                medication = new Medication(/*rs.getInt("medId"),*/rs.getString("medName"), rs.getString("dosage"), rs.getString("manufacturer"), rs.getInt("patientId"));
             }
         }
         catch(Exception e)
@@ -94,7 +98,7 @@ public class medicationManagementDAO {
         return medication;
     }
     //Update medication
-    public int updateMedication(medication medication)
+    public int updateMedication(Medication medication)
     {
         int status = 0;
         try
