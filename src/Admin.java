@@ -36,6 +36,7 @@ public class Admin {
          System.out.println("G. Prescribe Medication to Patient");
          System.out.println("H. View Patients and their Medication(s)");
          System.out.println("I. Delete Medication");
+         System.out.println("J. Update Medication");
          System.out.println("F. Exit");
          System.out.println("<><><><><><><><><><><><>");
          System.out.println("Enter an option");
@@ -52,6 +53,7 @@ public class Admin {
             case "G" -> addMedication();
             case "H" -> viewPatientsAndMeds();
             case "I" -> deleteMedication();
+            case "J" -> updateMedication();
             case "F" -> {
                System.out.println("Goodbye!");
                System.exit(0);
@@ -254,6 +256,55 @@ public class Admin {
       }
       System.out.println("\n");
 
+   }
+   public static void updateMedication() throws Exception {
+      //Add a function that let certain values stay the same
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter Patient ID:");
+      System.out.println("------------------------------------------------");
+      int patientId = parseInt(br.readLine());
+
+      //View patient medList
+      viewMedications(dao.getPatientByid(patientId));
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter the Medication ID of the Medication you would like to update:");
+      System.out.println("------------------------------------------------");
+      int medId = parseInt(br.readLine());
+      Medication originalMedicationData = medDao.getMedicationByMedId(medId);
+
+      System.out.println("------------------------------------------------");
+      System.out.println("Current Medication Name: "+ originalMedicationData.getMedName());
+      System.out.println("------------------------------------------------");
+      optionPrinter("Medication Name");
+      String option = br.readLine();
+      String medName = attributeChanger(originalMedicationData.getMedName(), option, "Medication Name");
+
+      System.out.println("------------------------------------------------");
+      System.out.println("Current Medication Dosage: "+ originalMedicationData.getDosage());
+      System.out.println("------------------------------------------------");
+      optionPrinter("Medication Dosage");
+      option = br.readLine();
+      String dosage = attributeChanger(originalMedicationData.getDosage(), option, "Medication Dosage");
+
+      System.out.println("------------------------------------------------");
+      System.out.println("Current Medication Manufacturer: "+ originalMedicationData.getManufacturer());
+      System.out.println("------------------------------------------------");
+      optionPrinter("Medication Manufacturer");
+      option = br.readLine();
+      String manufacturer = attributeChanger(originalMedicationData.getManufacturer(), option, "Medication Manufacturer");
+
+      //Store values and send to DB
+      Medication medication = new Medication(medId, medName, dosage, manufacturer, patientId);
+      int status = medDao.updateMedication(medication);
+      if(status ==1 )
+      {
+         System.out.println("Medication updated successfully");
+      }
+      else
+      {
+         System.out.println("ERROR while updating medication");
+      }
+      System.out.println("\n");
    }
 
 

@@ -77,13 +77,13 @@ public class medicationManagementDAO {
         return status;
     }
     //Get medication by ID
-    public Medication getMedicationByPatientId(int patientId) {
+    public Medication getMedicationByMedId(int medId) {
         Medication medication = null;
         try
         {
             Connection conn = DBUtil.getConnection();
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM medication WHERE patientId = ?");
-            ps.setInt(1, patientId);
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM medication WHERE medId = ?");
+            ps.setInt(1, medId);
             ResultSet rs = ps.executeQuery();
             //iterate through results
             while(rs.next())
@@ -103,16 +103,13 @@ public class medicationManagementDAO {
         int status = 0;
         try
         {
-            //Gotta find out a way to remove MedId
-            int medId = 0;
             Connection conn = DBUtil.getConnection();
-            PreparedStatement ps = conn.prepareStatement("UPDATE medication SET medName=?, dosage=?, manufacturer=?, patientId=? WHERE  medId=? ");
+            PreparedStatement ps = conn.prepareStatement("UPDATE medication SET medName=?, dosage=?, manufacturer=? WHERE  medId=? ");
             //set parameters of query here but using the values for the medication object
             ps.setString(1, medication.getMedName());
             ps.setString(2, medication.getDosage());
             ps.setString(3, medication.getManufacturer());
-            ps.setInt(4, medication.getPatientId());
-            ps.setInt(5, medId);
+            ps.setInt(4, medication.getMedId());
             status = ps.executeUpdate();  //If successful status should return 1
         }
         catch(Exception e)
