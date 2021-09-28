@@ -37,6 +37,7 @@ public class Admin {
          System.out.println("-----------------");
          System.out.println("G. Prescribe Medication to Patient");
          System.out.println("H. View Patients and their Medication(s)");
+         System.out.println("I. Delete Medication");
          System.out.println("F. Exit");
          System.out.println("<><><><><><><><><><><><>");
          System.out.println("Enter an option");
@@ -72,6 +73,9 @@ public class Admin {
 
             case "H":
                viewPatientsAndMeds();
+               break;
+            case "I":
+               deleteMedication();
                break;
 
             case "F":
@@ -118,11 +122,14 @@ public class Admin {
    public static void addPatient() throws Exception
    {
       //Remove ID assignment and change ID datatype to Int
+      /*
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
       //Parse ID to int
       int patientId = parseInt(br.readLine());
+       */
+      int patientId = 0;
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient Surname:");
       System.out.println("------------------------------------------------");
@@ -182,7 +189,8 @@ public class Admin {
       System.out.println("------------------------------------------------");
       int patientId = parseInt(br.readLine());
       //after user enters values, store them in a Medication variable
-      Medication medication = new Medication(medName, dosage,manufacturer, patientId);
+      int medId = 0;
+      Medication medication = new Medication(medId, medName, dosage,manufacturer, patientId);
       int status = medDao.addMed(medication);
       if(status ==1 )
       {
@@ -204,6 +212,7 @@ public class Admin {
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
       int patientId = parseInt(br.readLine());
+
       System.out.println("------------------------------------------------");
       System.out.println("Enter New Patient Surname:");
       System.out.println("------------------------------------------------");
@@ -264,6 +273,24 @@ public class Admin {
       System.out.println("\n");
 
    }
+   public static void deleteMedication() throws Exception
+   {
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter Medication ID:");
+      System.out.println("------------------------------------------------");
+      int medId = parseInt(br.readLine());
+      int status = medDao.deleteMedication(medId);
+      if(status == 1 )
+      {
+         System.out.println("Medication deleted successfully");
+      }
+      else
+      {
+         System.out.println("ERROR while deleting Medication");
+      }
+      System.out.println("\n");
+
+   }
 
    //ask user for productId and use dao method to display product
    public static void searchPatient() throws Exception
@@ -301,6 +328,7 @@ public class Admin {
    }
 
    public static void displayMedication(Medication medication){
+      System.out.println("Medication ID: "+medication.getMedId());
       System.out.println("Medication name: "+medication.getMedName());
       System.out.println("Medication dosage: "+medication.getDosage());
       System.out.println("Medication manufacturer: "+medication.getManufacturer());

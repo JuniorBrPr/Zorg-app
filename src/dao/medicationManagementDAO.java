@@ -22,7 +22,7 @@ public class medicationManagementDAO {
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * from medication ");
             while (rs.next()){
-                Medication medication = new Medication(rs.getString("medName"), rs.getString("dosage"), rs.getString("manufacturer"), rs.getInt("patientId"));
+                Medication medication = new Medication(rs.getInt("medId"), rs.getString("medName"), rs.getString("dosage"), rs.getString("manufacturer"), rs.getInt("patientId"));
                 if(medication.getPatientId() == patientId){
                     medicationList.add(medication);
                 }
@@ -88,7 +88,7 @@ public class medicationManagementDAO {
             //iterate through results
             while(rs.next())
             {
-                medication = new Medication(/*rs.getInt("medId"),*/rs.getString("medName"), rs.getString("dosage"), rs.getString("manufacturer"), rs.getInt("patientId"));
+                medication = new Medication(rs.getInt("medId"),rs.getString("medName"), rs.getString("dosage"), rs.getString("manufacturer"), rs.getInt("patientId"));
             }
         }
         catch(Exception e)

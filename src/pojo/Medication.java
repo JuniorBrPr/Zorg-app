@@ -8,22 +8,22 @@ public class Medication {
     int patientId;
 
 
-    public Medication(/*int medId, */String medName, String dosage, String manufacturer, int patientId) {
-        //this.medId = medId;
+    public Medication(int medId, String medName, String dosage, String manufacturer, int patientId) {
+        this.medId = medId;
         this.medName = medName;
         this.dosage = dosage;
         this.manufacturer = manufacturer;
         this.patientId = patientId;
     }
 
-    /*
+
     public int getMedId(){
         return medId;
     }
     public int setMedId(int medId){
         return medId;
     }
-     */
+
     public String getMedName(){
         return medName;
     }

@@ -60,15 +60,15 @@ public class PatientManagementDAO {
         try
         {
             Connection conn = DBUtil.getConnection();
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO patient VALUES(?,?,?,?,?,?,?)");
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO patient(surName, firstName, nickname, DateOfBirth,length, weight) VALUES(?,?,?,?,?,?)");
             //set parameters of query here but using the values for the product object
-            ps.setInt(1,patient.getPatientId());
-            ps.setString(2, patient.getSurName());
-            ps.setString(3, patient.getFirstName());
-            ps.setString(4, patient.getNickname());
-            ps.setDate(5, java.sql.Date.valueOf(patient.getDateOfBirth()));
-            ps.setDouble(6, patient.getLength());
-            ps.setDouble(7, patient.getWeight());
+            //ps.setInt(1,patient.getPatientId());
+            ps.setString(1, patient.getSurName());
+            ps.setString(2, patient.getFirstName());
+            ps.setString(3, patient.getNickname());
+            ps.setDate(4, java.sql.Date.valueOf(patient.getDateOfBirth()));
+            ps.setDouble(5, patient.getLength());
+            ps.setDouble(6, patient.getWeight());
             status = ps.executeUpdate();  //If successful status should return 1
         }
         catch(Exception e)
