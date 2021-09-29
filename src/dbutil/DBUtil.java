@@ -1,12 +1,11 @@
 package dbutil;
 import java.sql.*;
-
+//This whole class just connects and disconnects the program from the DB
 public class DBUtil {
     //DB connector
     public static Connection getConnection(){
         Connection conn = null;
         PreparedStatement pst;
-
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection("jdbc:mysql://localhost/zorgapp", "root","");

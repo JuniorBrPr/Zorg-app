@@ -1,17 +1,14 @@
 package dao;
-//DAO
 
 import java.sql.*;
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import dbutil.DBUtil;
 import pojo.Patient;
 
 public class PatientManagementDAO {
     //CRUD operations
-    //DB list maker
+    //This method makes a list of all the patient's in the DB, and returns it for display in the app
     public List<Patient> getAllPatients(){
         List<Patient> patientList = new ArrayList<Patient>();
         try{
@@ -24,15 +21,12 @@ public class PatientManagementDAO {
             }
             DBUtil.closeConnection(conn);  //Close DB connection
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
             e.printStackTrace();
         }
-
         return patientList;
     }
-
-    //Methods
+    //This method gets a patient by patientId from the DB and returns that patient
     public Patient getPatientByid(int patientId) {
         Patient patient = null;
         try
@@ -53,16 +47,15 @@ public class PatientManagementDAO {
         }
         return patient;
     }
-
+    //This method adds a given patient to the DB, returns status
     public int addPatient(Patient patient) {
-        //Status displays 1 if successfully inserted data or error
+        //Status displays 1 if successfully inserted data or else error
         int status = 0;
         try
         {
             Connection conn = DBUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement("INSERT INTO patient(surName, firstName, nickname, DateOfBirth,length, weight) VALUES(?,?,?,?,?,?)");
-            //set parameters of query here but using the values for the product object
-            //ps.setInt(1,patient.getPatientId());
+            //set parameters of query here but using the values for the patient object
             ps.setString(1, patient.getSurName());
             ps.setString(2, patient.getFirstName());
             ps.setString(3, patient.getNickname());
@@ -78,15 +71,16 @@ public class PatientManagementDAO {
         return status;
     }
 
-    //Updates patient in DB
+    //This method updates a patient in the DB and returns status
     public int updatePatient(Patient patient)
     {
+        //Status displays 1 if successfully inserted data or else error
         int status = 0;
         try
         {
             Connection conn = DBUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement("UPDATE patient SET surName=?, firstName=?, nickname=?, DateOfBirth=?, length=?, weight=? WHERE  patientId=?");
-            //set parameters of query here but using the values for the product object
+            //set parameters of query here but using the values for the patient object
             ps.setString(1, patient.getSurName());
             ps.setString(2, patient.getFirstName());
             ps.setString(3, patient.getNickname());
@@ -103,9 +97,10 @@ public class PatientManagementDAO {
         return status;
     }
 
-    //Delete patient in DB
+    //This method deletes a patient from the DB by patientId, returns status
     public int deletePatient(int patientId)
     {
+        //Status displays 1 if successfully deleted data or else error
         int status = 0;
         try
         {

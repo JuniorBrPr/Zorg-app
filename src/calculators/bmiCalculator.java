@@ -5,6 +5,7 @@ public class bmiCalculator {
         double bmi = (100*100*weight)/(length*length);
         return bmi;
     }
+    //Calculates the BMI category , with the bmi
     public String bmiCategory(double bmi) {
         if(bmi < 18.5) {
             return "Underweight";

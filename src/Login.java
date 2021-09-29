@@ -9,8 +9,9 @@ public class Login {
     void menu() throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         PatientManagementDAO dao = new PatientManagementDAO();
-        String adminId = "2021";
-        int UserID = 0;
+        //Admin screen password
+        String adminPassword = "2021";
+        int userID = 0;
         //login
         do
         {
@@ -26,18 +27,19 @@ public class Login {
             System.out.println("|                                    |");
             System.out.println("|        or enter F to Exit          |");
             System.out.println("--------------------------------------");
-            UserID = Integer.parseInt(br.readLine());
-            if(String.valueOf(UserID).toUpperCase().equals("F")){
+            userID = Integer.parseInt(br.readLine());
+            if(String.valueOf(userID).toUpperCase().equals("F")){
                 System.out.println("Goodbye!");
                 System.exit(0);
             }
             System.out.println("\n");
 
-            if (String.valueOf(UserID).equals(adminId)) {
+            if (String.valueOf(userID).equals(adminPassword)) {
                 Admin admin = new Admin();
                 admin.menu();
             }else{
-                Patient patient = dao.getPatientByid(UserID);
+                Patient patient = dao.getPatientByid(userID);
+                //If the userId is in the DB, status should return 1
                 int status = dao.updatePatient(patient);
                 if(status == 1){
                     patientScreen pS = new patientScreen();
@@ -46,7 +48,7 @@ public class Login {
                     System.out.println("Invalid credentials!");
                 }
             }
-        }while(!String.valueOf(UserID).toUpperCase().equals("F"));
+        }while(!String.valueOf(userID).toUpperCase().equals("F"));
     }
 }
 

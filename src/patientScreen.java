@@ -11,10 +11,11 @@ public class patientScreen {
     static Patient user;
     void menu(Patient patient) throws Exception {
         int patientId = patient.getPatientId();
+        //Calling the patient like this, updates the welcome greeting if the nickname gets changed by the user
         user = dao.getPatientByid(patientId);
         String option = "";
         do {
-
+            //Patient options screen
             System.out.println("Welcome " + user.getNickname());
             System.out.println("<><><><><><><><><><><><>");
             System.out.println("A. View your credentials");
@@ -41,18 +42,21 @@ public class patientScreen {
         System.out.println("\n");
 
     }
+    //Nickname changing function
     public static void updateNickname(Patient patient) throws Exception
     {
         System.out.println("------------------------------------------------");
-        System.out.println("Enter New Patient Nickname:");
+        System.out.println("Enter New Nickname:");
         System.out.println("------------------------------------------------");
         String nickname = br.readLine();
+        //Copy all the original attributes from the patient, only the nickname gets a new value.
         int patientId = patient.getPatientId();
         String surName = patient.getSurName();
         String firstName =patient.getFirstName();
         LocalDate DateOfBirth =patient.getDateOfBirth();
         double length = patient.getLength();
         double weight = patient.getWeight();
+        //Store them in a patient object and send it to the DB
         Patient patientU = new Patient(patientId, surName,firstName, nickname, DateOfBirth, length, weight);
         user = patientU;
         int status = dao.updatePatient(patientU);
