@@ -165,9 +165,13 @@ public class Admin {
       System.out.println("Enter medication manufacturer:");
       System.out.println("------------------------------------------------");
       String manufacturer = br.readLine();
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter medication type:");
+      System.out.println("------------------------------------------------");
+      String medType = br.readLine();
       //after user enters values, store them in a Medication variable
       int medId = 0;
-      Medication medication = new Medication(medId, medName, dosage,manufacturer, patientId);
+      Medication medication = new Medication(medId, medName, dosage,manufacturer, patientId, medType);
       //If the medication gets uploaded to the DB, status should return 1
       int status = medDao.addMed(medication);
       if(status ==1 )
@@ -183,7 +187,9 @@ public class Admin {
    //This method asks the admin if he wants to change a certain attribute value or retain it's original value, while updating patients or meds.
    public static String attributeChanger(String originalValue, @NotNull String option, String attributeName) throws IOException {
       String value = "";
-
+      System.out.println("Enter A to keep current "+attributeName);
+      System.out.println("Enter B to change "+attributeName);
+      System.out.println("------------------------------------------------");
       switch (option.toUpperCase()) {
          case "A" -> value = originalValue;
          case "B" -> {
@@ -193,12 +199,6 @@ public class Admin {
          default -> System.out.println("Invalid Option! Please try again!!");
       }
       return value;
-   }
-   //This method prints the options for the AttributeChanger method(Keep or change attribute value).
-   public static void optionPrinter(String attributeName){
-      System.out.println("Enter A to keep current "+attributeName);
-      System.out.println("Enter B to change "+attributeName);
-      System.out.println("------------------------------------------------");
    }
    //This method helps the admin change attribute values.
    public static void updatePatient() throws Exception
@@ -215,28 +215,24 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Current Patient Surname: "+ patientOriginalData.getSurName());
       System.out.println("------------------------------------------------");
-      optionPrinter("Surname");
       String option = br.readLine();
       String surName = attributeChanger(patientOriginalData.getSurName(), option, "Surname");
 
       System.out.println("------------------------------------------------");
       System.out.println("Current Patient First Name: "+patientOriginalData.getFirstName());
       System.out.println("------------------------------------------------");
-      optionPrinter("First Name");
       option = br.readLine();
       String firstName = attributeChanger(patientOriginalData.getFirstName(), option, "First Name");
 
       System.out.println("------------------------------------------------");
       System.out.println("Current Patient Nickname: "+patientOriginalData.getNickname());
       System.out.println("------------------------------------------------");
-      optionPrinter("Nickname");
       option = br.readLine();
       String nickname = attributeChanger(patientOriginalData.getNickname(), option, "Nickname");
 
       System.out.println("------------------------------------------------");
       System.out.println("Current Patient DateOfBirth (yyyy-MM-dd): "+patientOriginalData.getDateOfBirth());
       System.out.println("------------------------------------------------");
-      optionPrinter("DateOfBirth: (yyyy-MM-dd)");
       option = br.readLine();
       String sDateOfBirth = attributeChanger(String.valueOf(patientOriginalData.getDateOfBirth()), option, "DateOfBirth: (yyyy-MM-dd)");
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -245,14 +241,12 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Current Patient Length: "+patientOriginalData.getLength());
       System.out.println("------------------------------------------------");
-      optionPrinter("Length");
       option = br.readLine();
       double length = Double.parseDouble(attributeChanger(String.valueOf(patientOriginalData.getLength()), option, "Length"));
 
       System.out.println("------------------------------------------------");
       System.out.println("Current Patient Weight: "+patientOriginalData.getWeight());
       System.out.println("------------------------------------------------");
-      optionPrinter("Weight");
       option = br.readLine();
       double weight = Double.parseDouble(attributeChanger(String.valueOf(patientOriginalData.getWeight()), option, "Weight"));
 
@@ -291,26 +285,29 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Current Medication Name: "+ originalMedicationData.getMedName());
       System.out.println("------------------------------------------------");
-      optionPrinter("Medication Name");
       String option = br.readLine();
       String medName = attributeChanger(originalMedicationData.getMedName(), option, "Medication Name");
 
       System.out.println("------------------------------------------------");
       System.out.println("Current Medication Dosage: "+ originalMedicationData.getDosage());
       System.out.println("------------------------------------------------");
-      optionPrinter("Medication Dosage");
       option = br.readLine();
       String dosage = attributeChanger(originalMedicationData.getDosage(), option, "Medication Dosage");
 
       System.out.println("------------------------------------------------");
       System.out.println("Current Medication Manufacturer: "+ originalMedicationData.getManufacturer());
       System.out.println("------------------------------------------------");
-      optionPrinter("Medication Manufacturer");
       option = br.readLine();
       String manufacturer = attributeChanger(originalMedicationData.getManufacturer(), option, "Medication Manufacturer");
 
+      System.out.println("------------------------------------------------");
+      System.out.println("Current Medication Type: "+ originalMedicationData.getMedType());
+      System.out.println("------------------------------------------------");
+      option = br.readLine();
+      String medType = attributeChanger(originalMedicationData.getMedType(), option, "Medication Type");
+
       //Store values and send to DB
-      Medication medication = new Medication(medId, medName, dosage, manufacturer, patientId);
+      Medication medication = new Medication(medId, medName, dosage, manufacturer, patientId, medType);
       //If the Medication gets updated, status should return 1
       int status = medDao.updateMedication(medication);
       if(status ==1 ) {
@@ -406,6 +403,7 @@ public class Admin {
       System.out.println("Medication ID: "+medication.getMedId());
       System.out.println("Medication name: "+medication.getMedName());
       System.out.println("Medication dosage: "+medication.getDosage());
+      System.out.println("Medication type: "+medication.getMedType());
       System.out.println("Medication manufacturer: "+medication.getManufacturer());
    }
    //This method gets used in the searchPatient method and the viewPatientsAndMeds method

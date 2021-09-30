@@ -20,7 +20,7 @@ public class medicationManagementDAO {
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * from medication ");
             while (rs.next()){
-                Medication medication = new Medication(rs.getInt("medId"), rs.getString("medName"), rs.getString("dosage"), rs.getString("manufacturer"), rs.getInt("patientId"));
+                Medication medication = new Medication(rs.getInt("medId"), rs.getString("medName"), rs.getString("dosage"), rs.getString("manufacturer"), rs.getInt("patientId"),rs.getString("medType"));
                 if(medication.getPatientId() == patientId){
                     medicationList.add(medication);
                 }
@@ -37,13 +37,14 @@ public class medicationManagementDAO {
         int status = 0;
         try {
             Connection conn = DBUtil.getConnection();
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO medication(medName, dosage, manufacturer, patientId) VALUES(?,?,?,?)");
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO medication(medName, dosage, manufacturer, patientId, medType) VALUES(?,?,?,?,?)");
             //set parameters of query here but using the values for the product object
             //ps.setInt(1,medication.getMedId());
             ps.setString(1, medication.getMedName());
             ps.setString(2, medication.getDosage());
             ps.setString(3, medication.getManufacturer());
             ps.setInt(4, medication.getPatientId());
+            ps.setString(5, medication.getMedType());
             status = ps.executeUpdate();  //If successful status should return 1
         }
         catch(Exception e) {
@@ -77,7 +78,7 @@ public class medicationManagementDAO {
             //iterate through results
             while(rs.next())
             {
-                medication = new Medication(rs.getInt("medId"),rs.getString("medName"), rs.getString("dosage"), rs.getString("manufacturer"), rs.getInt("patientId"));
+                medication = new Medication(rs.getInt("medId"),rs.getString("medName"), rs.getString("dosage"), rs.getString("manufacturer"), rs.getInt("patientId"),rs.getString("medType"));
             }
         }
         catch(Exception e)
@@ -93,12 +94,13 @@ public class medicationManagementDAO {
         try
         {
             Connection conn = DBUtil.getConnection();
-            PreparedStatement ps = conn.prepareStatement("UPDATE medication SET medName=?, dosage=?, manufacturer=? WHERE  medId=? ");
+            PreparedStatement ps = conn.prepareStatement("UPDATE medication SET medName=?, dosage=?, manufacturer=?, medType=? WHERE  medId=? ");
             //set parameters of query here but using the values for the medication object
             ps.setString(1, medication.getMedName());
             ps.setString(2, medication.getDosage());
             ps.setString(3, medication.getManufacturer());
             ps.setInt(4, medication.getMedId());
+            ps.setString(5, medication.getMedType());
             status = ps.executeUpdate();  //If successful status should return 1
         }
         catch(Exception e)

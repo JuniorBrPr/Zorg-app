@@ -6,14 +6,16 @@ public class Medication {
     String dosage;
     String manufacturer;
     int patientId;
+    String medType;
 
 
-    public Medication(int medId, String medName, String dosage, String manufacturer, int patientId) {
+    public Medication(int medId, String medName, String dosage, String manufacturer, int patientId, String medType) {
         this.medId = medId;
         this.medName = medName;
         this.dosage = dosage;
         this.manufacturer = manufacturer;
         this.patientId = patientId;
+        this.medType = medType;;
     }
 
 
@@ -47,6 +49,12 @@ public class Medication {
     }
     public int setPatientId(int patientId){
         return patientId;
+    }
+    public String getMedType(){
+        return medType;
+    }
+    public String setMedType(String medType){
+        return medType;
     }
 }
 
