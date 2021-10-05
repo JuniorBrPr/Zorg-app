@@ -21,6 +21,7 @@ public class Admin {
    static medicationManagementDAO medDao = new medicationManagementDAO();
    static ageCalculator aC = new ageCalculator();
    static bmiCalculator bC = new bmiCalculator();
+   //This method shows and gives all the options the Admin has
    void menu() throws Exception {
       String option;
       do {
@@ -419,4 +420,5 @@ public class Admin {
       }
       System.out.println("-----------------------------------------------");
    }
+
 }

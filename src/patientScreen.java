@@ -10,6 +10,7 @@ public class patientScreen {
     static PatientManagementDAO dao = new PatientManagementDAO();
     static Patient user;
     void menu(Patient patient) throws Exception {
+        System.out.print("\u000C");
         int patientId = patient.getPatientId();
         //Calling the patient like this, updates the welcome greeting if the nickname gets changed by the user
         user = dao.getPatientByid(patientId);

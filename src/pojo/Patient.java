@@ -4,13 +4,13 @@ import java.time.LocalDate;
 
 public class Patient
 {
-   int patientId;
-   String surName;
-   String firstName;
-   String nickname;
-   LocalDate DateOfBirth;
-   double length;
-   double weight;
+   private int patientId;
+   private String surName;
+   private String firstName;
+   private String nickname;
+   private LocalDate DateOfBirth;
+   private double length;
+   private double weight;
 
 
    public Patient(int patientId, String surName, String firstName, String nickname, LocalDate DateOfBirth, double length, double weight){

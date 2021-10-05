@@ -3,9 +3,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import dao.PatientManagementDAO;
-
-
+//To start build application via the console
+//C:\Users\junio>java -jar C:\Users\junio\OneDrive\Bureaublad\javacode\zorgapp2021\out\artifacts\zorgapp2021_jar\zorgapp2021.jar
 public class Login {
+    //This method shows the login screen
     void menu() throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         PatientManagementDAO dao = new PatientManagementDAO();
@@ -37,6 +38,7 @@ public class Login {
             if (String.valueOf(userID).equals(adminPassword)) {
                 Admin admin = new Admin();
                 admin.menu();
+
             }else{
                 Patient patient = dao.getPatientByid(userID);
                 //If the userId is in the DB, status should return 1
@@ -44,6 +46,7 @@ public class Login {
                 if(status == 1){
                     patientScreen pS = new patientScreen();
                     pS.menu(patient);
+
                 }else {
                     System.out.println("Invalid credentials!");
                 }
