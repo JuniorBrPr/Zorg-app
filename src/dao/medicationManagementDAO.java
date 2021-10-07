@@ -11,12 +11,13 @@ import java.util.List;
 
 //Practically the same as the patientDAO, just for the medicines
 public class medicationManagementDAO {
+    DBUtil dU = new DBUtil();
     //CRUD Operations
     //This method makes a list of the meds a patient has by patientId and returns that list
     public List<Medication> getAllMeds(int patientId){
         List<Medication> medicationList = new ArrayList<Medication>();
         try{
-            Connection conn = DBUtil.getConnection();
+            Connection conn = dU.getConnection();
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * from medication ");
             while (rs.next()){
@@ -25,7 +26,7 @@ public class medicationManagementDAO {
                     medicationList.add(medication);
                 }
             }
-            DBUtil.closeConnection(conn);  //Close DB connection
+            dU.closeConnection(conn);  //Close DB connection
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -36,7 +37,7 @@ public class medicationManagementDAO {
     public int addMed(Medication medication){
         int status = 0;
         try {
-            Connection conn = DBUtil.getConnection();
+            Connection conn = dU.getConnection();
             PreparedStatement ps = conn.prepareStatement("INSERT INTO medication(medName, dosage, manufacturer, patientId, medType) VALUES(?,?,?,?,?)");
             //set parameters of query here but using the values for the product object
             //ps.setInt(1,medication.getMedId());
@@ -56,7 +57,7 @@ public class medicationManagementDAO {
     public int deleteMedication(int medId) {
         int status = 0;
         try {
-            Connection conn = DBUtil.getConnection();
+            Connection conn = dU.getConnection();
             PreparedStatement ps = conn.prepareStatement("DELETE FROM medication where medId = ?");
             ps.setInt(1, medId);
             status = ps.executeUpdate();  //If successful status should return 1
@@ -71,7 +72,7 @@ public class medicationManagementDAO {
         Medication medication = null;
         try
         {
-            Connection conn = DBUtil.getConnection();
+            Connection conn = dU.getConnection();
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM medication WHERE medId = ?");
             ps.setInt(1, medId);
             ResultSet rs = ps.executeQuery();
@@ -93,7 +94,7 @@ public class medicationManagementDAO {
         int status = 0;
         try
         {
-            Connection conn = DBUtil.getConnection();
+            Connection conn = dU.getConnection();
             PreparedStatement ps = conn.prepareStatement("UPDATE medication SET medName=?, dosage=?, manufacturer=?, medType=? WHERE  medId=? ");
             //set parameters of query here but using the values for the medication object
             ps.setString(1, medication.getMedName());

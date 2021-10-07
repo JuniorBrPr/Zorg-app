@@ -3,7 +3,7 @@ import java.sql.*;
 //This whole class just connects and disconnects the program from the DB
 public class DBUtil {
     //DB connector
-    public static Connection getConnection(){
+    public Connection getConnection(){
         Connection conn = null;
         PreparedStatement pst;
         try{
@@ -18,7 +18,7 @@ public class DBUtil {
         return conn;
     }
     //DB disconnect
-    public static void closeConnection(Connection conn)
+    public void closeConnection(Connection conn)
     {
         try{
             conn.close();

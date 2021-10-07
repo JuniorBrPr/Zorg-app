@@ -12,7 +12,6 @@ public class Patient
    private double length;
    private double weight;
 
-
    public Patient(int patientId, String surName, String firstName, String nickname, LocalDate DateOfBirth, double length, double weight){
       this.patientId = patientId;
       this.surName = surName;
@@ -23,8 +22,6 @@ public class Patient
       this.weight = weight;
    }
 
-
-   //pojo getters and setters
    public int getPatientId(){
       return patientId;
    }
@@ -47,6 +44,7 @@ public class Patient
       return nickname;
    }
    public String setNickname(String nickname){
+      this.nickname = nickname;
       return nickname;
    }
    public LocalDate getDateOfBirth(){
@@ -67,13 +65,4 @@ public class Patient
     public double setWeight(double weight){
       return weight;
    }
-/*
-   public ArrayList<Integer> getMedId() {
-      return medId;
-   }
-   public Integer setMedId(Integer medId){
-      return medId;
-   }
-
- */
 }

@@ -7,19 +7,20 @@ import dbutil.DBUtil;
 import pojo.Patient;
 
 public class PatientManagementDAO {
+    DBUtil dU = new DBUtil();
     //CRUD operations
     //This method makes a list of all the patient's in the DB, and returns it for display in the app
     public List<Patient> getAllPatients(){
         List<Patient> patientList = new ArrayList<Patient>();
         try{
-            Connection conn = DBUtil.getConnection();
+            Connection conn = dU.getConnection();
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * from patient");
             while (rs.next()){
                 Patient patient = new Patient(rs.getInt("patientId"), rs.getString("surName"), rs.getString("firstName"), rs.getString("nickname"), rs.getObject("DateOfBirth", LocalDate.class), rs.getDouble("length"), rs.getDouble("weight"));
                 patientList.add(patient);
             }
-            DBUtil.closeConnection(conn);  //Close DB connection
+            dU.closeConnection(conn);  //Close DB connection
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -31,7 +32,7 @@ public class PatientManagementDAO {
         Patient patient = null;
         try
         {
-            Connection conn = DBUtil.getConnection();
+            Connection conn = dU.getConnection();
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM patient WHERE patientId = ?");
             ps.setInt(1, patientId);
             ResultSet rs = ps.executeQuery();
@@ -53,7 +54,7 @@ public class PatientManagementDAO {
         int status = 0;
         try
         {
-            Connection conn = DBUtil.getConnection();
+            Connection conn = dU.getConnection();
             PreparedStatement ps = conn.prepareStatement("INSERT INTO patient(surName, firstName, nickname, DateOfBirth,length, weight) VALUES(?,?,?,?,?,?)");
             //set parameters of query here but using the values for the patient object
             ps.setString(1, patient.getSurName());
@@ -78,7 +79,7 @@ public class PatientManagementDAO {
         int status = 0;
         try
         {
-            Connection conn = DBUtil.getConnection();
+            Connection conn = dU.getConnection();
             PreparedStatement ps = conn.prepareStatement("UPDATE patient SET surName=?, firstName=?, nickname=?, DateOfBirth=?, length=?, weight=? WHERE  patientId=?");
             //set parameters of query here but using the values for the patient object
             ps.setString(1, patient.getSurName());
@@ -97,6 +98,26 @@ public class PatientManagementDAO {
         return status;
     }
 
+    public int updateNickname(Patient patient)
+    {
+        //Status displays 1 if successfully inserted data or else error
+        int status = 0;
+        try
+        {
+            Connection conn = dU.getConnection();
+            PreparedStatement ps = conn.prepareStatement("UPDATE patient SET nickname=? WHERE  patientId=?");
+            //set parameters of query here but using the values for the patient object
+            ps.setString(1, patient.getNickname());
+            ps.setInt(2, patient.getPatientId());
+            status = ps.executeUpdate();  //If successful status should return 1
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return status;
+    }
+
     //This method deletes a patient from the DB by patientId, returns status
     public int deletePatient(int patientId)
     {
@@ -104,7 +125,7 @@ public class PatientManagementDAO {
         int status = 0;
         try
         {
-            Connection conn = DBUtil.getConnection();
+            Connection conn = dU.getConnection();
             PreparedStatement ps = conn.prepareStatement("DELETE FROM patient where patientId = ?");
             ps.setInt(1, patientId);
             status = ps.executeUpdate();  //If successful status should return 1

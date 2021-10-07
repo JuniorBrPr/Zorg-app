@@ -16,6 +16,7 @@ public class Login {
         //login
         do
         {
+
             System.out.println("--------------------------------------");
             System.out.println("|                                    |");
             System.out.println("| Welcome to the uZorg application!  |");
@@ -28,6 +29,7 @@ public class Login {
             System.out.println("|                                    |");
             System.out.println("|        or enter F to Exit          |");
             System.out.println("--------------------------------------");
+
             userID = Integer.parseInt(br.readLine());
             if(String.valueOf(userID).toUpperCase().equals("F")){
                 System.out.println("Goodbye!");
@@ -48,7 +50,12 @@ public class Login {
                     pS.menu(patient);
 
                 }else {
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("---------------------");
                     System.out.println("Invalid credentials!");
+                    System.out.println("---------------------");
+                    System.out.println("\n");
                 }
             }
         }while(!String.valueOf(userID).toUpperCase().equals("F"));
