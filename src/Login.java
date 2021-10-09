@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
 
 import dao.PatientManagementDAO;
 //To start build application via the console
-//C:\Users\junio>java -jar C:\Users\junio\OneDrive\Bureaublad\javacode\zorgapp2021\out\artifacts\zorgapp2021_jar\zorgapp2021.jar
+//java -jar C:\Users\junio\OneDrive\Bureaublad\javacode\zorgapp2021\out\artifacts\zorgapp2021_jar\zorgapp2021.jar
 public class Login {
     //This method shows the login screen
     void menu() throws Exception {

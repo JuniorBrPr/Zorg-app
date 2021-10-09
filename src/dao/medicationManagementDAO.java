@@ -100,8 +100,8 @@ public class medicationManagementDAO {
             ps.setString(1, medication.getMedName());
             ps.setString(2, medication.getDosage());
             ps.setString(3, medication.getManufacturer());
-            ps.setInt(4, medication.getMedId());
-            ps.setString(5, medication.getMedType());
+            ps.setString(4, medication.getMedType());
+            ps.setInt(5, medication.getMedId());
             status = ps.executeUpdate();  //If successful status should return 1
         }
         catch(Exception e)

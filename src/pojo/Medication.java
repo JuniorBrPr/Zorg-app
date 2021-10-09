@@ -1,12 +1,12 @@
 package pojo;
 
 public class Medication {
-    int medId;
-    String medName;
-    String dosage;
-    String manufacturer;
-    int patientId;
-    String medType;
+    private int medId;
+    private String medName;
+    private String dosage;
+    private String manufacturer;
+    private int patientId;
+    private String medType;
 
 
     public Medication(int medId, String medName, String dosage, String manufacturer, int patientId, String medType) {
