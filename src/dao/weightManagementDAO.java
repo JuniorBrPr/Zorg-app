@@ -20,7 +20,7 @@ public class weightManagementDAO {
         try{
             Connection conn = dU.getConnection();
             Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM patient ORDER BY patient.DateOfBirth ASC ");
+            ResultSet rs = st.executeQuery("SELECT * FROM weight ORDER BY weight.weightDate ASC ");
             while (rs.next()){
                 Weight weight = new Weight(rs.getInt("weightId"), rs.getDouble("weight"),rs.getObject("weightDate" , LocalDate.class), rs.getInt("patientId"));
                 if(weight.getPatientId() == patientId){
@@ -90,7 +90,7 @@ public class weightManagementDAO {
         try
         {
             Connection conn = dU.getConnection();
-            PreparedStatement ps = conn.prepareStatement("UPDATE weight SET weight=?, weightDate=? WHERE  weightId ");
+            PreparedStatement ps = conn.prepareStatement("UPDATE weight SET weight=?, weightDate=? WHERE  weightId = ?");
             //set parameters of query here but using the values for the medication object
             ps.setDouble(1, weight.getWeight());
             ps.setObject(2, weight.getWeightDate());

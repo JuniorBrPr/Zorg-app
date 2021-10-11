@@ -1,27 +1,44 @@
 import calculators.ageCalculator;
 import calculators.bmiCalculator;
-import org.jetbrains.annotations.NotNull;
+
+import dao.weightManagementDAO;
+import dbutil.DBUtil;
+import javafx.application.Application;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
+import javafx.stage.Stage;
 import pojo.Medication;
 import pojo.Patient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import dao.PatientManagementDAO;
 import dao.medicationManagementDAO;
+import pojo.Weight;
+
 import java.time.LocalDate;
+import java.util.ResourceBundle;
 
 import static java.lang.Integer.parseInt;
 
 
-public class Admin {
+public class Admin extends Application {
    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
    PatientManagementDAO dao = new PatientManagementDAO();
    medicationManagementDAO medDao = new medicationManagementDAO();
+   weightManagementDAO weightDao = new weightManagementDAO();
    ageCalculator aC = new ageCalculator();
    bmiCalculator bC = new bmiCalculator();
    String option;
+   DBUtil db = new DBUtil();
    //This method shows and gives all the options the Admin has
    void menu() throws Exception {
       do {
@@ -37,6 +54,15 @@ public class Admin {
          System.out.println("H. View Patients and their Medication(s)");
          System.out.println("I. Delete Medication");
          System.out.println("J. Update Medication");
+         System.out.println("-----------------");
+         System.out.println("K. Add Patient Weight Data");
+         System.out.println("L. Update Patient Weight Data");
+         System.out.println("M. Delete Patient Weight Data");
+         System.out.println("N. View Patients and their Weight Data");
+         System.out.println("-----------------");
+         System.out.println("O. View Patients and All their Data");
+         System.out.println("P. View Patient weight Graph");
+         System.out.println("-----------------");
          System.out.println("F. Exit");
          System.out.println("<><><><><><><><><><><><>");
          System.out.println("Enter an option");
@@ -54,6 +80,12 @@ public class Admin {
             case "H" -> viewPatientsAndMeds();
             case "I" -> deleteMedication();
             case "J" -> updateMedication();
+            case "K" -> addWeight();
+            case "L" -> updateWeight();
+            case "M" -> deleteWeight();
+            case "N" -> viewPatientsAndWeightData();
+            case "O" -> viewPatientsAndAllData();
+            case "P" -> launch(option);
             case "F" -> {
                System.out.println("Goodbye!");
                System.exit(0);
@@ -358,6 +390,7 @@ public class Admin {
       Patient patient = dao.getPatientByid(patientId);
       displayPatient(patient);
       viewMedications(patient);
+      viewWeightData(patient);
       System.out.println("\n");
    }
    //This method is used for the viewPatients methods
@@ -425,5 +458,171 @@ public class Admin {
       System.out.println("\n");
       return nickname;
    }
+   //Add, update, search and delete weight functions down here
+   public void addWeight() throws Exception
+   {
+      viewPatientIds();
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter PatientId");
+      System.out.println("------------------------------------------------");
+      int patientId = parseInt(br.readLine());
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter Patient Weight:");
+      System.out.println("------------------------------------------------");
+      double weightTemp = Double.parseDouble(br.readLine());
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter Date of Weighing (YYYY-MM-DD):");
+      System.out.println("------------------------------------------------");
+      String weightDateTemp = br.readLine();
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      LocalDate weightDate = LocalDate.parse(weightDateTemp, formatter);
+      //after user enters values, store them in a Medication variable
+      int weightId = 0;
+      Weight weight = new Weight(weightId, weightTemp, weightDate, patientId);
+      //If the medication gets uploaded to the DB, status should return 1
+      int status = weightDao.addWeight(weight);
+      if(status ==1 )
+      {
+         System.out.println("Weight data added successfully");
+      }
+      else
+      {
+         System.out.println("ERROR while adding weight Data");
+      }
+      System.out.println("\n");
+   }
+   public void displayWeightData(Weight weight){
+      System.out.println("Weight Data ID: "+weight.getWeightId());
+      System.out.println("Weight (kg's): "+weight.getWeight());
+      System.out.println("Weighing Date: "+weight.getWeightDate());
+   }
+   public void viewWeightData(Patient patient){
+      System.out.println("Patient Weight Data= ");
+      List<Weight> weightList = weightDao.getAllWeightData(patient.getPatientId());
+      for(Weight weight: weightList)
+      {
+         //display medication one by one
+         displayWeightData(weight);
+         System.out.println("\n");
+      }
+      System.out.println("-----------------------------------------------");
+   }
+   public void viewPatientsAndWeightData() {
+      System.out.println("-----------------------------------------------");
+      //Get all the patients from the DAO and store them
+      List<Patient> patientList = dao.getAllPatients();
+      for(Patient patient: patientList) {
+         //display patient and their medication one by one
+         displayPatient(patient);
+         viewPatientsAndWeightData();
+      }
+      System.out.println("-----------------------------------------------");
+      System.out.println("\n");
+   }
+   public void viewPatientsAndAllData() {
+      System.out.println("-----------------------------------------------");
+      //Get all the patients from the DAO and store them
+      List<Patient> patientList = dao.getAllPatients();
+      for(Patient patient: patientList) {
+         //display patient and their medication one by one
+         displayPatient(patient);
+         viewMedications(patient);
+         viewPatientsAndWeightData();
+      }
+      System.out.println("-----------------------------------------------");
+      System.out.println("\n");
+   }
 
+   public void deleteWeight() throws Exception {
+      //First select the patient whose weight data the Admin would to delete
+      viewPatientIds();
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter Patient ID who's Weight data you would like to delete:");
+      System.out.println("------------------------------------------------");
+      int patientId = parseInt(br.readLine());
+      //View patient Weight Data list
+      viewWeightData(dao.getPatientByid(patientId));
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter the Weight ID of the Weight Data you would like to delete:");
+      System.out.println("------------------------------------------------");
+      int weightId = parseInt(br.readLine());
+      int status = weightDao.deleteWeight(weightId);
+      //If the weight data gets deleted from the DB status should return 1
+      if(status == 1 ) {
+         System.out.println("Medication deleted successfully");
+      }
+      else {
+         System.out.println("ERROR while deleting Medication");
+      }
+      System.out.println("\n");
+   }
+   public void updateWeight() throws Exception {
+      //First the admin has to select the Patient
+      viewPatientIds();
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter Patient ID:");
+      System.out.println("------------------------------------------------");
+      int patientId = parseInt(br.readLine());
+
+      //View patient weight data
+      //Then the admin has to select which Weight data he would like to update
+      viewWeightData(dao.getPatientByid(patientId));
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter the Weight ID of the Weight Data you would like to update:");
+      System.out.println("------------------------------------------------");
+      int weightId = parseInt(br.readLine());
+      Weight originalWeightData = weightDao.getWeightByWeightId(weightId);
+
+      //Ask the admin if he wants to retain or change the values
+      System.out.println("------------------------------------------------");
+      System.out.println("Current Weight: "+ originalWeightData.getWeight());
+      System.out.println("------------------------------------------------");
+      Double weightTemp = Double.parseDouble(attributeChanger(String.valueOf(originalWeightData.getWeight()),"Weight (kg's)"));
+
+      System.out.println("------------------------------------------------");
+      System.out.println("Current Weighing Date: "+ originalWeightData.getWeightDate());
+      System.out.println("------------------------------------------------");
+      String weightDateTemp = attributeChanger(String.valueOf(originalWeightData.getWeightDate()),"Weighing Date");
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      LocalDate weightDate = LocalDate.parse(weightDateTemp, formatter);
+
+      //Store values and send to DB
+
+      Weight weight = new Weight(weightId,weightTemp,weightDate, patientId);
+      //If the Medication gets updated, status should return 1
+      int status = weightDao.updateWeightData(weight);
+      if(status ==1 ) {
+         System.out.println("Weight Data updated successfully");
+      }
+      else {
+         System.out.println("ERROR while updating Weight Data!");
+      }
+      System.out.println("\n");
+   }
+
+   @Override
+   public void start(Stage stage) throws Exception {
+      FXMLLoader fxmlLoader = new FXMLLoader(Admin.class.getResource("weightCharts.fxml"));
+      Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+      stage.setTitle("Hello!");
+      stage.setScene(scene);
+      stage.show();
+   }
+
+/*
+   public class Controller implements Initializable {
+
+      @FXML
+      private LineChart<?, ?> chart;
+
+      @Override
+      public void initialize(URL url, ResourceBundle resourceBundle) {
+         XYChart.Series series = new XYChart.Series();
+
+         series.getData().add(new XYChart.Data<>())
+      }
+   }
+
+
+ */
 }
