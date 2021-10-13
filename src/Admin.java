@@ -4,28 +4,31 @@ import calculators.bmiCalculator;
 import dao.weightManagementDAO;
 import dbutil.DBUtil;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartFrame;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.jdbc.JDBCCategoryDataset;
 import pojo.Medication;
 import pojo.Patient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import dao.PatientManagementDAO;
 import dao.medicationManagementDAO;
 import pojo.Weight;
 
+
+import javax.swing.*;
 import java.time.LocalDate;
-import java.util.ResourceBundle;
 
 import static java.lang.Integer.parseInt;
 
@@ -37,8 +40,9 @@ public class Admin extends Application {
    weightManagementDAO weightDao = new weightManagementDAO();
    ageCalculator aC = new ageCalculator();
    bmiCalculator bC = new bmiCalculator();
-   String option;
    DBUtil db = new DBUtil();
+   String option;
+   String scene = "series";
    //This method shows and gives all the options the Admin has
    void menu() throws Exception {
       do {
@@ -85,7 +89,7 @@ public class Admin extends Application {
             case "M" -> deleteWeight();
             case "N" -> viewPatientsAndWeightData();
             case "O" -> viewPatientsAndAllData();
-            case "P" -> launch(option);
+            case "P" -> weightGraph();
             case "F" -> {
                System.out.println("Goodbye!");
                System.exit(0);
@@ -94,6 +98,24 @@ public class Admin extends Application {
          }
       }while(!option.equals("F"));
    }
+
+   private void weightGraph() {
+      try{
+         String patientId = "1";
+         String query = "SELECT weightDate,weight FROM weight WHERE patientId="+patientId+" ORDER BY weight.weightDate ASC ;";
+         JDBCCategoryDataset dataset = new JDBCCategoryDataset(db.getConnection(), query);
+         JFreeChart chart = ChartFactory.createLineChart("Weight Chart", "Date","Weight", dataset, PlotOrientation.VERTICAL, false, true, true);
+         BarRenderer renderer =null;
+         CategoryPlot plot =null;
+         renderer = new BarRenderer();
+         ChartFrame frame = new ChartFrame("Weight Chart", chart);
+         frame.setVisible(true);
+         frame.setSize(400,600);
+      }catch (Exception e) {
+         JOptionPane.showMessageDialog(null, e);
+      }
+   }
+
    //This method prints a list with all the patients and their credentials, except for their prescribed medication.
    public void viewPatients() {
       System.out.println("-----------------------------------------------");
@@ -107,6 +129,7 @@ public class Admin extends Application {
       System.out.println("-----------------------------------------------");
       System.out.println("\n");
    }
+
    //This method prints all the ID's and names of patients in the DB
    //Mainly made to make it easier for the Admin to find a patient while updating, deleting etc. a patient
    public void viewPatientIds() {
@@ -601,14 +624,23 @@ public class Admin extends Application {
    }
 
    @Override
-   public void start(Stage stage) throws Exception {
-      FXMLLoader fxmlLoader = new FXMLLoader(Admin.class.getResource("weightCharts.fxml"));
-      Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-      stage.setTitle("Hello!");
-      stage.setScene(scene);
-      stage.show();
+   public void start(Stage primaryStage) throws Exception {
+      Parent root = FXMLLoader.load(getClass().getResource("weightChart.fxml"));
+      primaryStage.setTitle("Patient weight chart");
+      primaryStage.setScene(new Scene(root));
+      primaryStage.show();
+   }
+/*
+   @Override
+   public void start(Stage primaryStage) throws Exception {
+      Parent root = FXMLLoader.load(getClass().getResource("weightChart.fxml"));
+      primaryStage.setTitle("Patient weight chart");
+      primaryStage.setScene(new Scene(root));
+      primaryStage.show();
    }
 
+
+ */
 /*
    public class Controller implements Initializable {
 
