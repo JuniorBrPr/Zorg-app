@@ -3,11 +3,6 @@ import calculators.bmiCalculator;
 
 import dao.weightManagementDAO;
 import dbutil.DBUtil;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -33,7 +28,7 @@ import java.time.LocalDate;
 import static java.lang.Integer.parseInt;
 
 
-public class Admin extends Application {
+public class Admin {
    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
    PatientManagementDAO dao = new PatientManagementDAO();
    medicationManagementDAO medDao = new medicationManagementDAO();
@@ -89,7 +84,7 @@ public class Admin extends Application {
             case "M" -> deleteWeight();
             case "N" -> viewPatientsAndWeightData();
             case "O" -> viewPatientsAndAllData();
-            case "P" -> weightGraph();
+            case "P" -> viewPatientWeightGraph();
             case "F" -> {
                System.out.println("Goodbye!");
                System.exit(0);
@@ -98,10 +93,20 @@ public class Admin extends Application {
          }
       }while(!option.equals("F"));
    }
+   public void viewPatientWeightGraph() throws IOException {
+      viewPatientIds();
+      System.out.println("------------------------------------------------");
+      System.out.println("Enter PatientId");
+      System.out.println("------------------------------------------------");
+      String patientId = br.readLine();
+      weightGraph(patientId);
+      viewWeightData(dao.getPatientByid(parseInt(patientId)));
+   }
 
-   private void weightGraph() {
+   public void weightGraph(String patientId) {
       try{
-         String patientId = "1";
+         //Ask the user to enter patientId
+         //Check if Id is in the DB
          String query = "SELECT weightDate,weight FROM weight WHERE patientId="+patientId+" ORDER BY weight.weightDate ASC ;";
          JDBCCategoryDataset dataset = new JDBCCategoryDataset(db.getConnection(), query);
          JFreeChart chart = ChartFactory.createLineChart("Weight Chart", "Date","Weight", dataset, PlotOrientation.VERTICAL, false, true, true);
@@ -537,7 +542,7 @@ public class Admin extends Application {
       for(Patient patient: patientList) {
          //display patient and their medication one by one
          displayPatient(patient);
-         viewPatientsAndWeightData();
+         viewWeightData(patient);
       }
       System.out.println("-----------------------------------------------");
       System.out.println("\n");
@@ -550,7 +555,8 @@ public class Admin extends Application {
          //display patient and their medication one by one
          displayPatient(patient);
          viewMedications(patient);
-         viewPatientsAndWeightData();
+         viewWeightData(patient);
+         System.out.println("><><><><><><><><><><><><><><><><><><><><><><><><");
       }
       System.out.println("-----------------------------------------------");
       System.out.println("\n");
@@ -623,38 +629,4 @@ public class Admin extends Application {
       System.out.println("\n");
    }
 
-   @Override
-   public void start(Stage primaryStage) throws Exception {
-      Parent root = FXMLLoader.load(getClass().getResource("weightChart.fxml"));
-      primaryStage.setTitle("Patient weight chart");
-      primaryStage.setScene(new Scene(root));
-      primaryStage.show();
-   }
-/*
-   @Override
-   public void start(Stage primaryStage) throws Exception {
-      Parent root = FXMLLoader.load(getClass().getResource("weightChart.fxml"));
-      primaryStage.setTitle("Patient weight chart");
-      primaryStage.setScene(new Scene(root));
-      primaryStage.show();
-   }
-
-
- */
-/*
-   public class Controller implements Initializable {
-
-      @FXML
-      private LineChart<?, ?> chart;
-
-      @Override
-      public void initialize(URL url, ResourceBundle resourceBundle) {
-         XYChart.Series series = new XYChart.Series();
-
-         series.getData().add(new XYChart.Data<>())
-      }
-   }
-
-
- */
 }

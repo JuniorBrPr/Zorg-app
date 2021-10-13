@@ -22,6 +22,7 @@ public class patientScreen {
             System.out.println("A. View your credentials");
             System.out.println("B. Change nickname");
             System.out.println("C. View Medication Data");
+            System.out.println("D. View Weight Graph");
             System.out.println("Z. LogOut");
             System.out.println("F. Exit");
             option = br.readLine();
@@ -33,6 +34,10 @@ public class patientScreen {
                 case "B" -> //updateNickname(dao.getPatientByid(patientId));
                         adminFunc.updateNickname(dao.getPatientByid(patientId), user);
                 case "C" -> adminFunc.viewMedications(dao.getPatientByid(patientId));
+                case "D" -> {
+                    adminFunc.weightGraph(String.valueOf(patientId));
+                    adminFunc.viewWeightData(dao.getPatientByid(patientId));
+                }
                 case "Z" -> option = "Z";
                 case "F" -> {
                     System.out.println("Goodbye!");
