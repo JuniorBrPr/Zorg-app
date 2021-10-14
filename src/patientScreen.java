@@ -3,7 +3,6 @@ import pojo.Patient;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.time.LocalDate;
 
 public class patientScreen {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -31,11 +30,11 @@ public class patientScreen {
                 case "A" ->
                         //By calling it this way, the nickname automatically updates after a change
                         adminFunc.displayPatient(dao.getPatientByid(patientId));
-                case "B" -> //updateNickname(dao.getPatientByid(patientId));
+                case "B" -> //updateNickname(dao.getPatientById(patientId));
                         adminFunc.updateNickname(dao.getPatientByid(patientId), user);
                 case "C" -> adminFunc.viewMedications(dao.getPatientByid(patientId));
                 case "D" -> {
-                    adminFunc.weightGraph(String.valueOf(patientId));
+                    adminFunc.weightGraph(patientId);
                     adminFunc.viewWeightData(dao.getPatientByid(patientId));
                 }
                 case "Z" -> option = "Z";

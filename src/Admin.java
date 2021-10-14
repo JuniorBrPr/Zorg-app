@@ -6,15 +6,14 @@ import dbutil.DBUtil;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.jdbc.JDBCCategoryDataset;
 import pojo.Medication;
 import pojo.Patient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import dao.PatientManagementDAO;
@@ -35,9 +34,9 @@ public class Admin {
    weightManagementDAO weightDao = new weightManagementDAO();
    ageCalculator aC = new ageCalculator();
    bmiCalculator bC = new bmiCalculator();
+   CheckPatientId checkPatientId = new CheckPatientId();
    DBUtil db = new DBUtil();
    String option;
-   String scene = "series";
    //This method shows and gives all the options the Admin has
    void menu() throws Exception {
       do {
@@ -93,26 +92,54 @@ public class Admin {
          }
       }while(!option.equals("F"));
    }
-   public void viewPatientWeightGraph() throws IOException {
+   /*
+   try{
+         if(checkPatientId.check(patientId)){
+
+         } else {
+         System.out.println("\n");
+         System.out.println("\n");
+         System.out.println("Invalid PatientID");
+         System.out.println("\n");
+         System.out.println("\n");
+      }
+      }catch (NumberFormatException ex) {
+         System.out.println("---------------------");
+         System.out.println("Invalid input");
+         System.out.println("---------------------");
+      }
+    */
+   public void viewPatientWeightGraph() throws IOException, SQLException {
       viewPatientIds();
       System.out.println("------------------------------------------------");
       System.out.println("Enter PatientId");
       System.out.println("------------------------------------------------");
-      String patientId = br.readLine();
-      weightGraph(patientId);
-      viewWeightData(dao.getPatientByid(parseInt(patientId)));
+      try{
+         int patientId = parseInt(br.readLine());
+         if(checkPatientId.check(patientId)){
+            weightGraph(patientId);
+            viewWeightData(dao.getPatientByid(patientId));
+         } else {
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("Invalid PatientID");
+            System.out.println("\n");
+            System.out.println("\n");
+         }
+      }catch (NumberFormatException ex) {
+         System.out.println("---------------------");
+         System.out.println("Invalid input");
+         System.out.println("---------------------");
+      }
    }
-
-   public void weightGraph(String patientId) {
+   public void weightGraph(int patientId) {
       try{
          //Ask the user to enter patientId
-         //Check if Id is in the DB
-         String query = "SELECT weightDate,weight FROM weight WHERE patientId="+patientId+" ORDER BY weight.weightDate ASC ;";
+         //Check if ID is in the DB
+         String patient = String.valueOf(patientId);
+         String query = "SELECT weightDate,weight FROM weight WHERE patientId="+patient+" ORDER BY weight.weightDate ASC ;";
          JDBCCategoryDataset dataset = new JDBCCategoryDataset(db.getConnection(), query);
          JFreeChart chart = ChartFactory.createLineChart("Weight Chart", "Date","Weight", dataset, PlotOrientation.VERTICAL, false, true, true);
-         BarRenderer renderer =null;
-         CategoryPlot plot =null;
-         renderer = new BarRenderer();
          ChartFrame frame = new ChartFrame("Weight Chart", chart);
          frame.setVisible(true);
          frame.setSize(400,600);
@@ -120,7 +147,6 @@ public class Admin {
          JOptionPane.showMessageDialog(null, e);
       }
    }
-
    //This method prints a list with all the patients and their credentials, except for their prescribed medication.
    public void viewPatients() {
       System.out.println("-----------------------------------------------");
@@ -213,37 +239,50 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter PatientId");
       System.out.println("------------------------------------------------");
-      int patientId = parseInt(br.readLine());
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter Medication name:");
-      System.out.println("------------------------------------------------");
-      String medName = br.readLine();
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter medication dosage:");
-      System.out.println("------------------------------------------------");
-      String dosage = br.readLine();
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter medication manufacturer:");
-      System.out.println("------------------------------------------------");
-      String manufacturer = br.readLine();
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter medication type:");
-      System.out.println("------------------------------------------------");
-      String medType = br.readLine();
-      //after user enters values, store them in a Medication variable
-      int medId = 0;
-      Medication medication = new Medication(medId, medName, dosage,manufacturer, patientId, medType);
-      //If the medication gets uploaded to the DB, status should return 1
-      int status = medDao.addMed(medication);
-      if(status ==1 )
-      {
-         System.out.println("Medication added successfully");
+      try{
+         int patientId = parseInt(br.readLine());
+         if(checkPatientId.check(patientId)){
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter Medication name:");
+            System.out.println("------------------------------------------------");
+            String medName = br.readLine();
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter medication dosage:");
+            System.out.println("------------------------------------------------");
+            String dosage = br.readLine();
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter medication manufacturer:");
+            System.out.println("------------------------------------------------");
+            String manufacturer = br.readLine();
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter medication type:");
+            System.out.println("------------------------------------------------");
+            String medType = br.readLine();
+            //after user enters values, store them in a Medication variable
+            int medId = 0;
+            Medication medication = new Medication(medId, medName, dosage,manufacturer, patientId, medType);
+            //If the medication gets uploaded to the DB, status should return 1
+            int status = medDao.addMed(medication);
+            if(status ==1 )
+            {
+               System.out.println("Medication added successfully");
+            }
+            else
+            {
+               System.out.println("ERROR while adding medication");
+            }
+         } else {
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("Invalid PatientID");
+            System.out.println("\n");
+         }
+         System.out.println("\n");
+      }catch (NumberFormatException ex) {
+         System.out.println("---------------------");
+         System.out.println("Invalid input");
+         System.out.println("---------------------");
       }
-      else
-      {
-         System.out.println("ERROR while adding medication");
-      }
-      System.out.println("\n");
    }
    //This method asks the admin if he wants to change a certain attribute value or retain it's original value, while updating patients or meds.
    public String attributeChanger(String originalValue, String attributeName) throws IOException {
@@ -270,50 +309,62 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter the ID of the Patient you would like to update:");
       System.out.println("------------------------------------------------");
-      int patientId = parseInt(br.readLine());
-      //Store original patient attributes
-      Patient patientOriginalData = dao.getPatientByid(patientId);
+      try{
+         int patientId = parseInt(br.readLine());
+         if(checkPatientId.check(patientId)){
+            Patient patientOriginalData = dao.getPatientByid(patientId);
 
-      System.out.println("------------------------------------------------");
-      System.out.println("Current Patient Surname: "+ patientOriginalData.getSurName());
-      System.out.println("------------------------------------------------");
-      String surName = attributeChanger(patientOriginalData.getSurName(), "Surname");
+            System.out.println("------------------------------------------------");
+            System.out.println("Current Patient Surname: "+ patientOriginalData.getSurName());
+            System.out.println("------------------------------------------------");
+            String surName = attributeChanger(patientOriginalData.getSurName(), "Surname");
 
-      System.out.println("------------------------------------------------");
-      System.out.println("Current Patient First Name: "+patientOriginalData.getFirstName());
-      System.out.println("------------------------------------------------");
-      String firstName = attributeChanger(patientOriginalData.getFirstName(), "First Name");
-      //Call nickname updating method
-      String nickname = updateNickname(dao.getPatientByid(patientId), patientOriginalData);
+            System.out.println("------------------------------------------------");
+            System.out.println("Current Patient First Name: "+patientOriginalData.getFirstName());
+            System.out.println("------------------------------------------------");
+            String firstName = attributeChanger(patientOriginalData.getFirstName(), "First Name");
+            //Call nickname updating method
+            String nickname = updateNickname(dao.getPatientByid(patientId), patientOriginalData);
 
-      System.out.println("------------------------------------------------");
-      System.out.println("Current Patient DateOfBirth (yyyy-MM-dd): "+patientOriginalData.getDateOfBirth());
-      System.out.println("------------------------------------------------");
-      String sDateOfBirth = attributeChanger(String.valueOf(patientOriginalData.getDateOfBirth()), "DateOfBirth: (yyyy-MM-dd)");
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-      LocalDate DateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
+            System.out.println("------------------------------------------------");
+            System.out.println("Current Patient DateOfBirth (yyyy-MM-dd): "+patientOriginalData.getDateOfBirth());
+            System.out.println("------------------------------------------------");
+            String sDateOfBirth = attributeChanger(String.valueOf(patientOriginalData.getDateOfBirth()), "DateOfBirth: (yyyy-MM-dd)");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate DateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
 
-      System.out.println("------------------------------------------------");
-      System.out.println("Current Patient Length: "+patientOriginalData.getLength());
-      System.out.println("------------------------------------------------");
-      double length = Double.parseDouble(attributeChanger(String.valueOf(patientOriginalData.getLength()), "Length"));
+            System.out.println("------------------------------------------------");
+            System.out.println("Current Patient Length: "+patientOriginalData.getLength());
+            System.out.println("------------------------------------------------");
+            double length = Double.parseDouble(attributeChanger(String.valueOf(patientOriginalData.getLength()), "Length"));
 
-      System.out.println("------------------------------------------------");
-      System.out.println("Current Patient Weight: "+patientOriginalData.getWeight());
-      System.out.println("------------------------------------------------");
-      double weight = Double.parseDouble(attributeChanger(String.valueOf(patientOriginalData.getWeight()),"Weight"));
+            System.out.println("------------------------------------------------");
+            System.out.println("Current Patient Weight: "+patientOriginalData.getWeight());
+            System.out.println("------------------------------------------------");
+            double weight = Double.parseDouble(attributeChanger(String.valueOf(patientOriginalData.getWeight()),"Weight"));
 
-      //after practitioner enters values, store them in a Patient variable
-      Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, length, weight);
-      //If the patient gets updated in the DB, status should return 1
-      int status = dao.updatePatient(patient);
-      if(status ==1 ) {
-         System.out.println("Patient updated successfully");
+            //after practitioner enters values, store them in a Patient variable
+            Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, length, weight);
+            //If the patient gets updated in the DB, status should return 1
+            int status = dao.updatePatient(patient);
+            if(status ==1 ) {
+               System.out.println("Patient updated successfully");
+            }
+            else {
+               System.out.println("ERROR while updating patient");
+            }
+         } else {
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("Invalid PatientID");
+            System.out.println("\n");
+         }
+         System.out.println("\n");
+      }catch (NumberFormatException ex) {
+         System.out.println("---------------------");
+         System.out.println("Invalid input");
+         System.out.println("---------------------");
       }
-      else {
-         System.out.println("ERROR while updating patient");
-      }
-      System.out.println("\n");
    }
    //Basically the same as the updatePatient method, except with this method you can update individual Medicine prescriptions.
    //This method helps the admin update Medication attribute values
@@ -323,49 +374,61 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
-      int patientId = parseInt(br.readLine());
+      try{
+         int patientId = parseInt(br.readLine());
+         if(checkPatientId.check(patientId)){
+            //View patient medList
+            //Then the admin has to select which Medicine he would like to update
+            viewMedications(dao.getPatientByid(patientId));
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter the Medication ID of the Medication you would like to update:");
+            System.out.println("------------------------------------------------");
+            int medId = parseInt(br.readLine());
+            Medication originalMedicationData = medDao.getMedicationByMedId(medId);
 
-      //View patient medList
-      //Then the admin has to select which Medicine he would like to update
-      viewMedications(dao.getPatientByid(patientId));
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter the Medication ID of the Medication you would like to update:");
-      System.out.println("------------------------------------------------");
-      int medId = parseInt(br.readLine());
-      Medication originalMedicationData = medDao.getMedicationByMedId(medId);
+            //Ask the admin if he wants to retain or change the values
+            System.out.println("------------------------------------------------");
+            System.out.println("Current Medication Name: "+ originalMedicationData.getMedName());
+            System.out.println("------------------------------------------------");
+            String medName = attributeChanger(originalMedicationData.getMedName(),"Medication Name");
 
-      //Ask the admin if he wants to retain or change the values
-      System.out.println("------------------------------------------------");
-      System.out.println("Current Medication Name: "+ originalMedicationData.getMedName());
-      System.out.println("------------------------------------------------");
-      String medName = attributeChanger(originalMedicationData.getMedName(),"Medication Name");
+            System.out.println("------------------------------------------------");
+            System.out.println("Current Medication Dosage: "+ originalMedicationData.getDosage());
+            System.out.println("------------------------------------------------");
+            String dosage = attributeChanger(originalMedicationData.getDosage(),"Medication Dosage");
 
-      System.out.println("------------------------------------------------");
-      System.out.println("Current Medication Dosage: "+ originalMedicationData.getDosage());
-      System.out.println("------------------------------------------------");
-      String dosage = attributeChanger(originalMedicationData.getDosage(),"Medication Dosage");
+            System.out.println("------------------------------------------------");
+            System.out.println("Current Medication Manufacturer: "+ originalMedicationData.getManufacturer());
+            System.out.println("------------------------------------------------");
+            String manufacturer = attributeChanger(originalMedicationData.getManufacturer(),"Medication Manufacturer");
 
-      System.out.println("------------------------------------------------");
-      System.out.println("Current Medication Manufacturer: "+ originalMedicationData.getManufacturer());
-      System.out.println("------------------------------------------------");
-      String manufacturer = attributeChanger(originalMedicationData.getManufacturer(),"Medication Manufacturer");
+            System.out.println("------------------------------------------------");
+            System.out.println("Current Medication Type: "+ originalMedicationData.getMedType());
+            System.out.println("------------------------------------------------");
+            String medType = attributeChanger(originalMedicationData.getMedType(),"Medication Type");
 
-      System.out.println("------------------------------------------------");
-      System.out.println("Current Medication Type: "+ originalMedicationData.getMedType());
-      System.out.println("------------------------------------------------");
-      String medType = attributeChanger(originalMedicationData.getMedType(),"Medication Type");
-
-      //Store values and send to DB
-      Medication medication = new Medication(medId, medName, dosage, manufacturer, patientId, medType);
-      //If the Medication gets updated, status should return 1
-      int status = medDao.updateMedication(medication);
-      if(status ==1 ) {
-         System.out.println("Medication updated successfully");
+            //Store values and send to DB
+            Medication medication = new Medication(medId, medName, dosage, manufacturer, patientId, medType);
+            //If the Medication gets updated, status should return 1
+            int status = medDao.updateMedication(medication);
+            if(status ==1 ) {
+               System.out.println("Medication updated successfully");
+            }
+            else {
+               System.out.println("ERROR while updating medication");
+            }
+         } else {
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("Invalid PatientID");
+            System.out.println("\n");
+            System.out.println("\n");
+         }
+      }catch (NumberFormatException ex) {
+         System.out.println("---------------------");
+         System.out.println("Invalid input");
+         System.out.println("---------------------");
       }
-      else {
-         System.out.println("ERROR while updating medication");
-      }
-      System.out.println("\n");
    }
    //This method helps the admin delete a patient from the DB by patientId
    public void deletePatient() throws Exception {
@@ -374,15 +437,28 @@ public class Admin {
       System.out.println("Enter the ID of the Patient you would like to delete:");
       System.out.println("------------------------------------------------");
       //If the patient gets deleted form the DB status should return 1
-      int patientId = parseInt(br.readLine());
-      int status = dao.deletePatient(patientId);
-      if(status == 1 ) {
-         System.out.println("Patient deleted successfully");
+      try{
+         int patientId = parseInt(br.readLine());
+         if(checkPatientId.check(patientId)){
+            int status = dao.deletePatient(patientId);
+            if(status == 1 ) {
+               System.out.println("Patient deleted successfully");
+            }
+            else {
+               System.out.println("ERROR while deleting patient");
+            }
+         } else {
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("Invalid PatientID");
+            System.out.println("\n");
+            System.out.println("\n");
+         }
+      }catch (NumberFormatException ex) {
+         System.out.println("---------------------");
+         System.out.println("Invalid input");
+         System.out.println("---------------------");
       }
-      else {
-         System.out.println("ERROR while deleting patient");
-      }
-      System.out.println("\n");
    }
    //This method helps the admin delete a medication from the DB by medId
    public void deleteMedication() throws Exception {
@@ -391,22 +467,35 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID who's Medication(s) data you would like to delete:");
       System.out.println("------------------------------------------------");
-      int patientId = parseInt(br.readLine());
-      //View patient medList
-      viewMedications(dao.getPatientByid(patientId));
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter the Medication ID of the Medication you would like to delete:");
-      System.out.println("------------------------------------------------");
-      int medId = parseInt(br.readLine());
-      int status = medDao.deleteMedication(medId);
-      //If the medication gets deleted from the DB status should return 1
-      if(status == 1 ) {
-         System.out.println("Medication deleted successfully");
+      try{
+         int patientId = parseInt(br.readLine());
+         if(checkPatientId.check(patientId)){
+            //View patient medList
+            viewMedications(dao.getPatientByid(patientId));
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter the Medication ID of the Medication you would like to delete:");
+            System.out.println("------------------------------------------------");
+            int medId = parseInt(br.readLine());
+            int status = medDao.deleteMedication(medId);
+            //If the medication gets deleted from the DB status should return 1
+            if(status == 1 ) {
+               System.out.println("Medication deleted successfully");
+            }
+            else {
+               System.out.println("ERROR while deleting Medication");
+            }
+         } else {
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("Invalid PatientID");
+            System.out.println("\n");
+         }
+         System.out.println("\n");
+      }catch (NumberFormatException ex) {
+         System.out.println("---------------------");
+         System.out.println("Invalid input");
+         System.out.println("---------------------");
       }
-      else {
-         System.out.println("ERROR while deleting Medication");
-      }
-      System.out.println("\n");
    }
    //This method helps the admin lookup the credentials and medication of a Patient by patientId
    public void searchPatient() throws Exception {
@@ -414,12 +503,25 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter the ID of the Patient you would like to search:");
       System.out.println("------------------------------------------------");
-      int patientId = parseInt(br.readLine());
-      Patient patient = dao.getPatientByid(patientId);
-      displayPatient(patient);
-      viewMedications(patient);
-      viewWeightData(patient);
-      System.out.println("\n");
+      try{
+         int patientId = parseInt(br.readLine());
+         if(checkPatientId.check(patientId)){
+            Patient patient = dao.getPatientByid(patientId);
+            displayPatient(patient);
+            viewMedications(patient);
+            viewWeightData(patient);
+         } else {
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("Invalid PatientID");
+            System.out.println("\n");
+         }
+         System.out.println("\n");
+      }catch (NumberFormatException ex) {
+         System.out.println("---------------------");
+         System.out.println("Invalid input");
+         System.out.println("---------------------");
+      }
    }
    //This method is used for the viewPatients methods
    //It just prints out the credentials of a patient
@@ -493,31 +595,44 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter PatientId");
       System.out.println("------------------------------------------------");
-      int patientId = parseInt(br.readLine());
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient Weight:");
-      System.out.println("------------------------------------------------");
-      double weightTemp = Double.parseDouble(br.readLine());
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter Date of Weighing (YYYY-MM-DD):");
-      System.out.println("------------------------------------------------");
-      String weightDateTemp = br.readLine();
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-      LocalDate weightDate = LocalDate.parse(weightDateTemp, formatter);
-      //after user enters values, store them in a Medication variable
-      int weightId = 0;
-      Weight weight = new Weight(weightId, weightTemp, weightDate, patientId);
-      //If the medication gets uploaded to the DB, status should return 1
-      int status = weightDao.addWeight(weight);
-      if(status ==1 )
-      {
-         System.out.println("Weight data added successfully");
+      try{
+         int patientId = parseInt(br.readLine());
+         if(checkPatientId.check(patientId)){
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter Patient Weight:");
+            System.out.println("------------------------------------------------");
+            double weightTemp = Double.parseDouble(br.readLine());
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter Date of Weighing (YYYY-MM-DD):");
+            System.out.println("------------------------------------------------");
+            String weightDateTemp = br.readLine();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate weightDate = LocalDate.parse(weightDateTemp, formatter);
+            //after user enters values, store them in a Medication variable
+            int weightId = 0;
+            Weight weight = new Weight(weightId, weightTemp, weightDate, patientId);
+            //If the medication gets uploaded to the DB, status should return 1
+            int status = weightDao.addWeight(weight);
+            if(status ==1 )
+            {
+               System.out.println("Weight data added successfully");
+            }
+            else
+            {
+               System.out.println("ERROR while adding weight Data");
+            }
+         } else {
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("Invalid PatientID");
+            System.out.println("\n");
+         }
+         System.out.println("\n");
+      }catch (NumberFormatException ex) {
+         System.out.println("---------------------");
+         System.out.println("Invalid input");
+         System.out.println("---------------------");
       }
-      else
-      {
-         System.out.println("ERROR while adding weight Data");
-      }
-      System.out.println("\n");
    }
    public void displayWeightData(Weight weight){
       System.out.println("Weight Data ID: "+weight.getWeightId());
@@ -568,65 +683,91 @@ public class Admin {
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID who's Weight data you would like to delete:");
       System.out.println("------------------------------------------------");
-      int patientId = parseInt(br.readLine());
-      //View patient Weight Data list
-      viewWeightData(dao.getPatientByid(patientId));
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter the Weight ID of the Weight Data you would like to delete:");
-      System.out.println("------------------------------------------------");
-      int weightId = parseInt(br.readLine());
-      int status = weightDao.deleteWeight(weightId);
-      //If the weight data gets deleted from the DB status should return 1
-      if(status == 1 ) {
-         System.out.println("Medication deleted successfully");
+      try{
+         int patientId = parseInt(br.readLine());
+         if(checkPatientId.check(patientId)){
+            //View patient Weight Data list
+            viewWeightData(dao.getPatientByid(patientId));
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter the Weight ID of the Weight Data you would like to delete:");
+            System.out.println("------------------------------------------------");
+            int weightId = parseInt(br.readLine());
+            int status = weightDao.deleteWeight(weightId);
+            //If the weight data gets deleted from the DB status should return 1
+            if(status == 1 ) {
+               System.out.println("Medication deleted successfully");
+            }
+            else {
+               System.out.println("ERROR while deleting Medication");
+            }
+         } else {
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("Invalid PatientID");
+            System.out.println("\n");
+         }
+         System.out.println("\n");
+      }catch (NumberFormatException ex) {
+         System.out.println("---------------------");
+         System.out.println("Invalid input");
+         System.out.println("---------------------");
       }
-      else {
-         System.out.println("ERROR while deleting Medication");
-      }
-      System.out.println("\n");
    }
+   @SuppressWarnings("WrapperTypeMayBePrimitive")
    public void updateWeight() throws Exception {
       //First the admin has to select the Patient
       viewPatientIds();
       System.out.println("------------------------------------------------");
       System.out.println("Enter Patient ID:");
       System.out.println("------------------------------------------------");
-      int patientId = parseInt(br.readLine());
+      try{
+         int patientId = parseInt(br.readLine());
+         if(checkPatientId.check(patientId)){
+            //View patient weight data
+            //Then the admin has to select which Weight data he would like to update
+            viewWeightData(dao.getPatientByid(patientId));
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter the Weight ID of the Weight Data you would like to update:");
+            System.out.println("------------------------------------------------");
+            int weightId = parseInt(br.readLine());
+            Weight originalWeightData = weightDao.getWeightByWeightId(weightId);
 
-      //View patient weight data
-      //Then the admin has to select which Weight data he would like to update
-      viewWeightData(dao.getPatientByid(patientId));
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter the Weight ID of the Weight Data you would like to update:");
-      System.out.println("------------------------------------------------");
-      int weightId = parseInt(br.readLine());
-      Weight originalWeightData = weightDao.getWeightByWeightId(weightId);
+            //Ask the admin if he wants to retain or change the values
+            System.out.println("------------------------------------------------");
+            System.out.println("Current Weight: "+ originalWeightData.getWeight());
+            System.out.println("------------------------------------------------");
+            Double weightTemp = Double.parseDouble(attributeChanger(String.valueOf(originalWeightData.getWeight()),"Weight (kg's)"));
 
-      //Ask the admin if he wants to retain or change the values
-      System.out.println("------------------------------------------------");
-      System.out.println("Current Weight: "+ originalWeightData.getWeight());
-      System.out.println("------------------------------------------------");
-      Double weightTemp = Double.parseDouble(attributeChanger(String.valueOf(originalWeightData.getWeight()),"Weight (kg's)"));
+            System.out.println("------------------------------------------------");
+            System.out.println("Current Weighing Date: "+ originalWeightData.getWeightDate());
+            System.out.println("------------------------------------------------");
+            String weightDateTemp = attributeChanger(String.valueOf(originalWeightData.getWeightDate()),"Weighing Date");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate weightDate = LocalDate.parse(weightDateTemp, formatter);
 
-      System.out.println("------------------------------------------------");
-      System.out.println("Current Weighing Date: "+ originalWeightData.getWeightDate());
-      System.out.println("------------------------------------------------");
-      String weightDateTemp = attributeChanger(String.valueOf(originalWeightData.getWeightDate()),"Weighing Date");
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-      LocalDate weightDate = LocalDate.parse(weightDateTemp, formatter);
+            //Store values and send to DB
 
-      //Store values and send to DB
-
-      Weight weight = new Weight(weightId,weightTemp,weightDate, patientId);
-      //If the Medication gets updated, status should return 1
-      int status = weightDao.updateWeightData(weight);
-      if(status ==1 ) {
-         System.out.println("Weight Data updated successfully");
+            Weight weight = new Weight(weightId,weightTemp,weightDate, patientId);
+            //If the Medication gets updated, status should return 1
+            int status = weightDao.updateWeightData(weight);
+            if(status ==1 ) {
+               System.out.println("Weight Data updated successfully");
+            }
+            else {
+               System.out.println("ERROR while updating Weight Data!");
+            }
+         } else {
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("Invalid PatientID");
+            System.out.println("\n");
+         }
+         System.out.println("\n");
+      }catch (NumberFormatException ex) {
+         System.out.println("---------------------");
+         System.out.println("Invalid input");
+         System.out.println("---------------------");
       }
-      else {
-         System.out.println("ERROR while updating Weight Data!");
-      }
-      System.out.println("\n");
    }
 
 }
