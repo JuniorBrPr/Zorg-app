@@ -4,6 +4,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.*;
 import dbutil.DBUtil;
+import org.jetbrains.annotations.TestOnly;
 import pojo.Patient;
 
 public class PatientManagementDAO {
@@ -11,7 +12,7 @@ public class PatientManagementDAO {
     //CRUD operations
     //This method makes a list of all the patient's in the DB, and returns it for display in the app
     public List<Patient> getAllPatients(){
-        List<Patient> patientList = new ArrayList<Patient>();
+        List<Patient> patientList = new ArrayList<>();
         try{
             Connection conn = dU.getConnection();
             Statement st = conn.createStatement();
@@ -47,6 +48,21 @@ public class PatientManagementDAO {
             e.printStackTrace();
         }
         return patient;
+    }
+    public int getLatestPatient(){
+        int patientId = 0;
+        try {
+            Connection conn = dU.getConnection();
+            PreparedStatement ps = conn.prepareStatement("SELECT patientId FROM patient ORDER BY patientId DESC LIMIT 1");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                patientId = rs.getInt("patientId");
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return patientId;
     }
     //This method adds a given patient to the DB, returns status
     public int addPatient(Patient patient) {
@@ -109,6 +125,26 @@ public class PatientManagementDAO {
             //set parameters of query here but using the values for the patient object
             ps.setString(1, patient.getNickname());
             ps.setInt(2, patient.getPatientId());
+            status = ps.executeUpdate();  //If successful status should return 1
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return status;
+    }
+
+    public int updateWeight(int patientId, double weight)
+    {
+        //Status displays 1 if successfully inserted data or else error
+        int status = 0;
+        try
+        {
+            Connection conn = dU.getConnection();
+            PreparedStatement ps = conn.prepareStatement("UPDATE patient SET weight=? WHERE  patientId=?");
+            //set parameters of query here but using the values for the patient object
+            ps.setDouble(1, weight);
+            ps.setInt(2, patientId);
             status = ps.executeUpdate();  //If successful status should return 1
         }
         catch(Exception e)

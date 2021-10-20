@@ -37,6 +37,7 @@ public class Admin {
    CheckPatientId checkPatientId = new CheckPatientId();
    DBUtil db = new DBUtil();
    String option;
+   LocalDate now = LocalDate.now();
    //This method shows and gives all the options the Admin has
    void menu() throws Exception {
       do {
@@ -92,23 +93,6 @@ public class Admin {
          }
       }while(!option.equals("F"));
    }
-   /*
-   try{
-         if(checkPatientId.check(patientId)){
-
-         } else {
-         System.out.println("\n");
-         System.out.println("\n");
-         System.out.println("Invalid PatientID");
-         System.out.println("\n");
-         System.out.println("\n");
-      }
-      }catch (NumberFormatException ex) {
-         System.out.println("---------------------");
-         System.out.println("Invalid input");
-         System.out.println("---------------------");
-      }
-    */
    public void viewPatientWeightGraph() throws IOException, SQLException {
       viewPatientIds();
       System.out.println("------------------------------------------------");
@@ -225,6 +209,18 @@ public class Admin {
       if(status ==1 )
       {
          System.out.println("Patient added successfully");
+         //Add a Weight object to the Patient in order to populate the weight Graph
+         int weightId = 0;
+         patientId = dao.getLatestPatient();
+         Weight weightN = new Weight(weightId, weight, now, patientId);
+         //If the weight gets uploaded to the DB, status should return 1
+         int statusWeight = weightDao.addWeight(weightN);
+         if(statusWeight ==1 ) {
+            System.out.println("Weight data added successfully");
+         }
+         else {
+            System.out.println("ERROR while adding weight Data");
+         }
       }
       else
       {
@@ -588,6 +584,7 @@ public class Admin {
       System.out.println("\n");
       return nickname;
    }
+
    //Add, update, search and delete weight functions down here
    public void addWeight() throws Exception
    {
@@ -608,19 +605,27 @@ public class Admin {
             String weightDateTemp = br.readLine();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate weightDate = LocalDate.parse(weightDateTemp, formatter);
-            //after user enters values, store them in a Medication variable
+            //after user enters values, store them in a Weight variable
+            //Werkt nog niet
+               if (weightDate.isEqual(now)) {
+                  int status = dao.updateWeight(patientId, weightTemp);
+                  if(status ==1 ) {
+                     System.out.println("Weight updated successfully");
+                  }
+                  else {
+                     System.out.println("ERROR while updating Weight");
+                  }
+               }
             int weightId = 0;
             Weight weight = new Weight(weightId, weightTemp, weightDate, patientId);
-            //If the medication gets uploaded to the DB, status should return 1
+            //If the weight gets uploaded to the DB, status should return 1
             int status = weightDao.addWeight(weight);
-            if(status ==1 )
-            {
-               System.out.println("Weight data added successfully");
-            }
-            else
-            {
-               System.out.println("ERROR while adding weight Data");
-            }
+               if(status ==1 ) {
+                  System.out.println("Weight data added successfully");
+               }
+               else {
+                  System.out.println("ERROR while adding weight Data");
+               }
          } else {
             System.out.println("\n");
             System.out.println("\n");
@@ -695,10 +700,10 @@ public class Admin {
             int status = weightDao.deleteWeight(weightId);
             //If the weight data gets deleted from the DB status should return 1
             if(status == 1 ) {
-               System.out.println("Medication deleted successfully");
+               System.out.println("Weight deleted successfully");
             }
             else {
-               System.out.println("ERROR while deleting Medication");
+               System.out.println("ERROR while deleting Weight");
             }
          } else {
             System.out.println("\n");
