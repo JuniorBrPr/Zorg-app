@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import dao.PatientManagementDAO;
 
@@ -16,9 +18,10 @@ public class Login {
     DBUtil dB = new DBUtil();
     CheckPatientId checkPatientId = new CheckPatientId();
     //This method shows the login screen
-    void menu() throws Exception {
+    void menu(Locale locale) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         PatientManagementDAO dao = new PatientManagementDAO();
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
         //Admin screen password
         String adminPassword = "2021";
         int userID = 0;
@@ -27,29 +30,29 @@ public class Login {
         {
 
             System.out.println("--------------------------------------");
-            System.out.println("|                                    |");
-            System.out.println("| Welcome to the uZorg application!  |");
-            System.out.println("|                                    |");
-            System.out.println("|                                    |");
-            System.out.println("|           Enter UserID             |");
-            System.out.println("|                                    |");
-            System.out.println("|                                    |");
-            System.out.println("|        !MUST BE A VALID ID!        |");
-            System.out.println("|                                    |");
-            System.out.println("|        or enter F to Exit          |");
+            System.out.println("|");
+            System.out.println("|  "+resourceBundle.getString("welcome"));
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|  "+resourceBundle.getString("userId"));
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|  "+resourceBundle.getString("userIdValidation"));
+            System.out.println("|");
+            System.out.println("|  "+resourceBundle.getString("fToExit"));
             System.out.println("--------------------------------------");
 
             String option = br.readLine();
             //userID = Integer.parseInt(br.readLine());
             if(option.equalsIgnoreCase("F")){
-                System.out.println("Goodbye!");
+                System.out.println(resourceBundle.getString("gbye"));
                 System.exit(0);
             }
             try{
                 userID = parseInt(option);
                 if (String.valueOf(userID).equals(adminPassword)) {
                     Admin admin = new Admin();
-                    admin.menu();
+                    admin.menu(locale);
                 }else{
                     if(checkPatientId.check(userID)){
                         Connection conn = dB.getConnection();
@@ -59,19 +62,19 @@ public class Login {
                         if (rs.next()) {
                             Patient patient = dao.getPatientByid(userID);
                             patientScreen pS = new patientScreen();
-                            pS.menu(patient);
+                            pS.menu(patient, locale);
                         } else {
                             System.out.println("\n");
                             System.out.println("\n");
                             System.out.println("---------------------");
-                            System.out.println("Invalid credentials!");
+                            System.out.println(resourceBundle.getString("invalidCreds"));
                             System.out.println("---------------------");
                             System.out.println("\n");
                         }
                     } else {
                         System.out.println("\n");
                         System.out.println("\n");
-                        System.out.println("Invalid PatientID");
+                        System.out.println(resourceBundle.getString("invalidId"));
                         System.out.println("\n");
                         System.out.println("\n");
                     }
@@ -79,7 +82,7 @@ public class Login {
 
             }catch (NumberFormatException ex) {
                 System.out.println("---------------------");
-                System.out.println("Invalid credentials!");
+                System.out.println(resourceBundle.getString("invalidCreds"));
                 System.out.println("---------------------");
             }
 

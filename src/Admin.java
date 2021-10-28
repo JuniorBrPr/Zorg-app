@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import dao.PatientManagementDAO;
 import dao.medicationManagementDAO;
@@ -23,6 +24,8 @@ import pojo.Weight;
 
 import javax.swing.*;
 import java.time.LocalDate;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import static java.lang.Integer.parseInt;
 
@@ -38,108 +41,115 @@ public class Admin {
    DBUtil db = new DBUtil();
    String option;
    LocalDate now = LocalDate.now();
+
    //This method shows and gives all the options the Admin has
-   void menu() throws Exception {
+   void menu(Locale locale) throws Exception {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
       do {
-         System.out.println("      Welcome Admin    ");
+         System.out.println("      "+resourceBundle.getString("welcom")+" Admin    ");
          System.out.println("<><><><><><><><><><><><>");
-         System.out.println("A. View Patients");
-         System.out.println("B. Add Patient");
-         System.out.println("C. Update Patient");
-         System.out.println("D. Delete Patient");
-         System.out.println("E. Search Patient");
+         System.out.println("A. "+resourceBundle.getString("viewPatients"));
+         System.out.println("B. "+resourceBundle.getString("addPatient"));
+         System.out.println("C. "+resourceBundle.getString("updatePatient"));
+         System.out.println("D. "+resourceBundle.getString("deletePatient"));
+         System.out.println("E. "+resourceBundle.getString("searchPatient"));
          System.out.println("-----------------");
-         System.out.println("G. Prescribe Medication to Patient");
-         System.out.println("H. View Patients and their Medication(s)");
-         System.out.println("I. Delete Medication");
-         System.out.println("J. Update Medication");
+         System.out.println("G. "+resourceBundle.getString("prescrbMed"));
+         System.out.println("H. "+resourceBundle.getString("viewAllPandM"));
+         System.out.println("I. "+resourceBundle.getString("delMed"));
+         System.out.println("J. "+resourceBundle.getString("updtMed"));
          System.out.println("-----------------");
-         System.out.println("K. Add Patient Weight Data");
-         System.out.println("L. Update Patient Weight Data");
-         System.out.println("M. Delete Patient Weight Data");
-         System.out.println("N. View Patients and their Weight Data");
+         System.out.println("K. "+resourceBundle.getString("addWeight"));
+         System.out.println("L. "+resourceBundle.getString("updtWeight"));
+         System.out.println("M. "+resourceBundle.getString("delWeight"));
+         System.out.println("N. "+resourceBundle.getString("viewAllWeightData"));
          System.out.println("-----------------");
-         System.out.println("O. View Patients and All their Data");
-         System.out.println("P. View Patient weight Graph");
+         System.out.println("O. "+resourceBundle.getString("viewAllData"));
+         System.out.println("P. "+resourceBundle.getString("viewGraph"));
          System.out.println("-----------------");
-         System.out.println("F. Exit");
+         System.out.println("F. "+resourceBundle.getString("exit"));
          System.out.println("<><><><><><><><><><><><>");
-         System.out.println("Enter an option");
+         System.out.println(resourceBundle.getString("enterOption"));
          System.out.println("<><><><><><><><><><><><>");
          option = br.readLine();
          System.out.println("\n");
          //Admin options
          switch (option.toUpperCase()) {
-            case "A" -> viewPatients();
-            case "B" -> addPatient();
-            case "C" -> updatePatient();
-            case "D" -> deletePatient();
-            case "E" -> searchPatient();
-            case "G" -> addMedication();
-            case "H" -> viewPatientsAndMeds();
-            case "I" -> deleteMedication();
-            case "J" -> updateMedication();
-            case "K" -> addWeight();
-            case "L" -> updateWeight();
-            case "M" -> deleteWeight();
-            case "N" -> viewPatientsAndWeightData();
-            case "O" -> viewPatientsAndAllData();
-            case "P" -> viewPatientWeightGraph();
+            case "A" -> viewPatients(locale);
+            case "B" -> addPatient(locale);
+            case "C" -> updatePatient(locale);
+            case "D" -> deletePatient(locale);
+            case "E" -> searchPatient(locale);
+            case "G" -> addMedication(locale);
+            case "H" -> viewPatientsAndMeds(locale);
+            case "I" -> deleteMedication(locale);
+            case "J" -> updateMedication(locale);
+            case "K" -> addWeight(locale);
+            case "L" -> updateWeight(locale);
+            case "M" -> deleteWeight(locale);
+            case "N" -> viewPatientsAndWeightData(locale);
+            case "O" -> viewPatientsAndAllData(locale);
+            case "P" -> viewPatientWeightGraph(locale);
             case "F" -> {
-               System.out.println("Goodbye!");
+               System.out.println(resourceBundle.getString("gbye"));
                System.exit(0);
             }
-            default -> System.out.println("Invalid Option! Please try again!!");
+            default -> System.out.println(resourceBundle.getString("invalidOpt"));
          }
       }while(!option.equals("F"));
    }
-   public void viewPatientWeightGraph() throws IOException, SQLException {
-      viewPatientIds();
+   //i18n'd
+   public void viewPatientWeightGraph(Locale locale) throws IOException, SQLException {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
+      viewPatientIds(locale);
       System.out.println("------------------------------------------------");
-      System.out.println("Enter PatientId");
+      System.out.println(resourceBundle.getString("enterId"));
       System.out.println("------------------------------------------------");
       try{
          int patientId = parseInt(br.readLine());
          if(checkPatientId.check(patientId)){
-            weightGraph(patientId);
-            viewWeightData(dao.getPatientByid(patientId));
+            weightGraph(patientId, locale);
+            viewWeightData(dao.getPatientByid(patientId), locale);
          } else {
             System.out.println("\n");
             System.out.println("\n");
-            System.out.println("Invalid PatientID");
+            System.out.println(resourceBundle.getString("invalidId"));
             System.out.println("\n");
             System.out.println("\n");
          }
       }catch (NumberFormatException ex) {
          System.out.println("---------------------");
-         System.out.println("Invalid input");
+         System.out.println(resourceBundle.getString("invalidInput"));
          System.out.println("---------------------");
       }
    }
-   public void weightGraph(int patientId) {
+   //i18n'd
+   public void weightGraph(int patientId,Locale locale) {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
       try{
          //Ask the user to enter patientId
          //Check if ID is in the DB
          String patient = String.valueOf(patientId);
          String query = "SELECT weightDate,weight FROM weight WHERE patientId="+patient+" ORDER BY weight.weightDate ASC ;";
          JDBCCategoryDataset dataset = new JDBCCategoryDataset(db.getConnection(), query);
-         JFreeChart chart = ChartFactory.createLineChart("Weight Chart", "Date","Weight", dataset, PlotOrientation.VERTICAL, false, true, true);
-         ChartFrame frame = new ChartFrame("Weight Chart", chart);
+         JFreeChart chart = ChartFactory.createLineChart(resourceBundle.getString("weightChart"), resourceBundle.getString("date"),resourceBundle.getString("weight"), dataset, PlotOrientation.VERTICAL, false, true, true);
+         ChartFrame frame = new ChartFrame(resourceBundle.getString("weightChart"), chart);
          frame.setVisible(true);
          frame.setSize(400,600);
       }catch (Exception e) {
          JOptionPane.showMessageDialog(null, e);
       }
    }
+   //i18n'd
    //This method prints a list with all the patients and their credentials, except for their prescribed medication.
-   public void viewPatients() {
+   public void viewPatients(Locale locale) {
       System.out.println("-----------------------------------------------");
       //Get all the patients from the DAO and store them
       List<Patient> patientList = dao.getAllPatients();
       for(Patient patient: patientList)
       {
          //display patient one by one
-         displayPatient(patient);
+         displayPatient(patient, locale);
       }
       System.out.println("-----------------------------------------------");
       System.out.println("\n");
@@ -147,111 +157,119 @@ public class Admin {
 
    //This method prints all the ID's and names of patients in the DB
    //Mainly made to make it easier for the Admin to find a patient while updating, deleting etc. a patient
-   public void viewPatientIds() {
+   //i18n'd
+   public void viewPatientIds(Locale locale) {
       System.out.println("-----------------------------------------------");
       //Get all the patients from the DAO and store them
       List<Patient> patientIdList = dao.getAllPatients();
       for(Patient patient: patientIdList) {
-         displayPatientId(patient);
+         displayPatientId(patient, locale);
       }
       System.out.println("-----------------------------------------------");
       System.out.println("\n");
    }
+   //i18n'd
    //Same as viewPatients method, but this method also prints the medication Data for every patient
-   public void viewPatientsAndMeds() {
+   public void viewPatientsAndMeds(Locale locale) {
       System.out.println("-----------------------------------------------");
       //Get all the patients from the DAO and store them
       List<Patient> patientList = dao.getAllPatients();
       for(Patient patient: patientList) {
          //display patient and their medication one by one
-         displayPatient(patient);
-         viewMedications(patient);
+         displayPatient(patient, locale);
+         viewMedications(patient, locale);
       }
       System.out.println("-----------------------------------------------");
       System.out.println("\n");
    }
    //This method adds a new Patient to the database. The admin has to insert the credentials.
-   //I could maybe a function that lets certain values be null, if the admin doesn't know them.
-   public void addPatient() throws Exception {
+   //i18n'd
+   public void addPatient(Locale locale) throws Exception {
       //patientId gets set on the server side, this value is a placeholder
       int patientId = 0;
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient Surname:");
-      System.out.println("------------------------------------------------");
-      String surName = br.readLine();
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient First Name:");
-      System.out.println("------------------------------------------------");
-      String firstName = br.readLine();
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient Nickname:");
-      System.out.println("------------------------------------------------");
-      String nickname = br.readLine();
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient DateOfBirth: (yyyy-MM-dd)");
-      System.out.println("------------------------------------------------");
-      String sDateOfBirth = br.readLine();
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient Length (In CM):");
-      System.out.println("------------------------------------------------");
-      double length = Double.parseDouble(br.readLine());
-      System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient Weight (In KG's):");
-      System.out.println("------------------------------------------------");
-      double weight = Double.parseDouble(br.readLine());
-      //Here the DOB gets formatted the correct way in order to store it in the DB and to later be able to calculate the age.
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-      LocalDate DateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
-      //After admin enters values, store them in a Patient variable
-      Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, length, weight);
-      //If the patient gets uploaded to the DB, status should return 1
-      int status = dao.addPatient(patient);
-      if(status ==1 )
-      {
-         System.out.println("Patient added successfully");
-         //Add a Weight object to the Patient in order to populate the weight Graph
-         int weightId = 0;
-         patientId = dao.getLatestPatient();
-         Weight weightN = new Weight(weightId, weight, now, patientId);
-         //If the weight gets uploaded to the DB, status should return 1
-         int statusWeight = weightDao.addWeight(weightN);
-         if(statusWeight ==1 ) {
-            System.out.println("Weight data added successfully");
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
+      try {
+         System.out.println("------------------------------------------------");
+         System.out.println(resourceBundle.getString("enterSur")+" :");
+         System.out.println("------------------------------------------------");
+         String surName = br.readLine();
+         System.out.println("------------------------------------------------");
+         System.out.println(resourceBundle.getString("eFirst")+" :");
+         System.out.println("------------------------------------------------");
+         String firstName = br.readLine();
+         System.out.println("------------------------------------------------");
+         System.out.println(resourceBundle.getString("eNick")+" :");
+         System.out.println("------------------------------------------------");
+         String nickname = br.readLine();
+         System.out.println("------------------------------------------------");
+         System.out.println(resourceBundle.getString("eDOB")+" : (yyyy-MM-dd)");
+         System.out.println("------------------------------------------------");
+         String sDateOfBirth = br.readLine();
+         //Here the DOB gets formatted the correct way in order to store it in the DB and to later be able to calculate the age.
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate DateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
+         System.out.println("------------------------------------------------");
+         System.out.println(resourceBundle.getString("eLen")+" :");
+         System.out.println("------------------------------------------------");
+         double length = Double.parseDouble(br.readLine());
+         System.out.println("------------------------------------------------");
+         System.out.println(resourceBundle.getString("eWeight")+" :");
+         System.out.println("------------------------------------------------");
+         double weight = Double.parseDouble(br.readLine());
+         //After admin enters values, store them in a Patient variable
+         Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, length, weight);
+         //If the patient gets uploaded to the DB, status should return 1
+         int status = dao.addPatient(patient);
+         if(status ==1 ){
+            System.out.println(resourceBundle.getString("pAddSucces"));
+            //Add a Weight object to the Patient in order to populate the weight Graph
+            int weightId = 0;
+            patientId = dao.getLatestPatient();
+            Weight weightN = new Weight(weightId, weight, now, patientId);
+            //If the weight gets uploaded to the DB, status should return 1
+            int statusWeight = weightDao.addWeight(weightN);
+            if(statusWeight ==1 ) {
+               System.out.println(resourceBundle.getString("wAddedSucces"));
+            }
+            else {
+               System.out.println(resourceBundle.getString("wAddingError"));
+            }
          }
-         else {
-            System.out.println("ERROR while adding weight Data");
+         else
+         {
+            System.out.println(resourceBundle.getString("pAddingError"));
          }
+         System.out.println("\n");
+      }catch (DateTimeParseException ex){
+         System.out.println(resourceBundle.getString("wrongDateFormat"));
       }
-      else
-      {
-         System.out.println("ERROR while adding patient");
-      }
-      System.out.println("\n");
    }
    //This method lets the admin 'prescribe' a medication to a patient by ID
-   public void addMedication() throws Exception
+   //i18n'd
+   public void addMedication(Locale locale) throws Exception
    {
-      viewPatientIds();
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
+      viewPatientIds(locale);
       System.out.println("------------------------------------------------");
-      System.out.println("Enter PatientId");
+      System.out.println(resourceBundle.getString("enterId"));
       System.out.println("------------------------------------------------");
       try{
          int patientId = parseInt(br.readLine());
          if(checkPatientId.check(patientId)){
             System.out.println("------------------------------------------------");
-            System.out.println("Enter Medication name:");
+            System.out.println(resourceBundle.getString("eMedName")+" :");
             System.out.println("------------------------------------------------");
             String medName = br.readLine();
             System.out.println("------------------------------------------------");
-            System.out.println("Enter medication dosage:");
+            System.out.println(resourceBundle.getString("eMedDosage")+" :");
             System.out.println("------------------------------------------------");
             String dosage = br.readLine();
             System.out.println("------------------------------------------------");
-            System.out.println("Enter medication manufacturer:");
+            System.out.println(resourceBundle.getString("eMedManufacturer")+" :");
             System.out.println("------------------------------------------------");
             String manufacturer = br.readLine();
             System.out.println("------------------------------------------------");
-            System.out.println("Enter medication type:");
+            System.out.println(resourceBundle.getString("eMedType")+" :");
             System.out.println("------------------------------------------------");
             String medType = br.readLine();
             //after user enters values, store them in a Medication variable
@@ -261,49 +279,53 @@ public class Admin {
             int status = medDao.addMed(medication);
             if(status ==1 )
             {
-               System.out.println("Medication added successfully");
+               System.out.println(resourceBundle.getString("medAddedSucces"));
             }
             else
             {
-               System.out.println("ERROR while adding medication");
+               System.out.println(resourceBundle.getString("medAddingError"));
             }
          } else {
             System.out.println("\n");
             System.out.println("\n");
-            System.out.println("Invalid PatientID");
+            System.out.println(resourceBundle.getString("invalidId"));
             System.out.println("\n");
          }
          System.out.println("\n");
       }catch (NumberFormatException ex) {
          System.out.println("---------------------");
-         System.out.println("Invalid input");
+         System.out.println(resourceBundle.getString("invalidInput"));
          System.out.println("---------------------");
       }
    }
    //This method asks the admin if he wants to change a certain attribute value or retain it's original value, while updating patients or meds.
-   public String attributeChanger(String originalValue, String attributeName) throws IOException {
+   //i18n'd
+   public String attributeChanger(String originalValue, String attributeName, Locale locale) throws IOException {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
       String value = "";
-      System.out.println("Enter A to keep current "+attributeName);
-      System.out.println("Enter B to change "+attributeName);
+      System.out.println(resourceBundle.getString("eAToKeep")+" "+attributeName);
+      System.out.println(resourceBundle.getString("eBToChange")+" "+attributeName);
       System.out.println("------------------------------------------------");
       option = br.readLine();
       switch (option.toUpperCase()) {
          case "A" -> value = originalValue;
          case "B" -> {
-            System.out.println("Enter new " + attributeName + ":");
+            System.out.println(resourceBundle.getString("eNew")+" "+ attributeName + ":");
             value = br.readLine();
          }
-         default -> System.out.println("Invalid Option! Please try again!!");
+         default -> System.out.println(resourceBundle.getString("invalidOpt"));
       }
       return value;
    }
    //This method helps the admin change attribute values.
-   public void updatePatient() throws Exception
+   //i18n'd
+   public void updatePatient(Locale locale) throws Exception
    {
       //Prints a list with all the patients in the DB and their ID's and names
-      viewPatientIds();
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
+      viewPatientIds(locale);
       System.out.println("------------------------------------------------");
-      System.out.println("Enter the ID of the Patient you would like to update:");
+      System.out.println(resourceBundle.getString("eIdOfPatient")+" :");
       System.out.println("------------------------------------------------");
       try{
          int patientId = parseInt(br.readLine());
@@ -311,126 +333,133 @@ public class Admin {
             Patient patientOriginalData = dao.getPatientByid(patientId);
 
             System.out.println("------------------------------------------------");
-            System.out.println("Current Patient Surname: "+ patientOriginalData.getSurName());
+            System.out.println(resourceBundle.getString("cSur")+" : "+ patientOriginalData.getSurName());
             System.out.println("------------------------------------------------");
-            String surName = attributeChanger(patientOriginalData.getSurName(), "Surname");
+            String surName = attributeChanger(patientOriginalData.getSurName(), resourceBundle.getString("sur"), locale);
 
             System.out.println("------------------------------------------------");
-            System.out.println("Current Patient First Name: "+patientOriginalData.getFirstName());
+            System.out.println(resourceBundle.getString("cFirst")+" : "+patientOriginalData.getFirstName());
             System.out.println("------------------------------------------------");
-            String firstName = attributeChanger(patientOriginalData.getFirstName(), "First Name");
+            String firstName = attributeChanger(patientOriginalData.getFirstName(), resourceBundle.getString("firstN"), locale);
             //Call nickname updating method
-            String nickname = updateNickname(dao.getPatientByid(patientId), patientOriginalData);
+            String nickname = updateNickname(dao.getPatientByid(patientId), patientOriginalData, locale);
 
             System.out.println("------------------------------------------------");
-            System.out.println("Current Patient DateOfBirth (yyyy-MM-dd): "+patientOriginalData.getDateOfBirth());
+            System.out.println(resourceBundle.getString("cDOB")+" : "+patientOriginalData.getDateOfBirth());
             System.out.println("------------------------------------------------");
-            String sDateOfBirth = attributeChanger(String.valueOf(patientOriginalData.getDateOfBirth()), "DateOfBirth: (yyyy-MM-dd)");
+            String sDateOfBirth = attributeChanger(String.valueOf(patientOriginalData.getDateOfBirth()), resourceBundle.getString("DOB"), locale);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate DateOfBirth = LocalDate.parse(sDateOfBirth, formatter);
 
             System.out.println("------------------------------------------------");
-            System.out.println("Current Patient Length: "+patientOriginalData.getLength());
+            System.out.println(resourceBundle.getString("cLen")+" : "+patientOriginalData.getLength());
             System.out.println("------------------------------------------------");
-            double length = Double.parseDouble(attributeChanger(String.valueOf(patientOriginalData.getLength()), "Length"));
+            double length = Double.parseDouble(attributeChanger(String.valueOf(patientOriginalData.getLength()), resourceBundle.getString("len"), locale));
 
             System.out.println("------------------------------------------------");
-            System.out.println("Current Patient Weight: "+patientOriginalData.getWeight());
+            System.out.println(resourceBundle.getString("cWeight")+" : "+patientOriginalData.getWeight());
             System.out.println("------------------------------------------------");
-            double weight = Double.parseDouble(attributeChanger(String.valueOf(patientOriginalData.getWeight()),"Weight"));
+            double weight = Double.parseDouble(attributeChanger(String.valueOf(patientOriginalData.getWeight()),resourceBundle.getString("weightWord"), locale));
 
             //after practitioner enters values, store them in a Patient variable
             Patient patient = new Patient(patientId, surName,firstName, nickname, DateOfBirth, length, weight);
             //If the patient gets updated in the DB, status should return 1
             int status = dao.updatePatient(patient);
             if(status ==1 ) {
-               System.out.println("Patient updated successfully");
+               System.out.println(resourceBundle.getString("pUpdateSucces"));
             }
             else {
-               System.out.println("ERROR while updating patient");
+               System.out.println(resourceBundle.getString("pUpdateError"));
             }
          } else {
             System.out.println("\n");
             System.out.println("\n");
-            System.out.println("Invalid PatientID");
+            System.out.println(resourceBundle.getString("invalidId"));
             System.out.println("\n");
          }
          System.out.println("\n");
       }catch (NumberFormatException ex) {
          System.out.println("---------------------");
-         System.out.println("Invalid input");
+         System.out.println(resourceBundle.getString("invalidInput"));
          System.out.println("---------------------");
+      }
+      catch (DateTimeParseException ex){
+         System.out.println(resourceBundle.getString("wrongDateFormat"));
       }
    }
    //Basically the same as the updatePatient method, except with this method you can update individual Medicine prescriptions.
    //This method helps the admin update Medication attribute values
-   public void updateMedication() throws Exception {
+   //i18n'd
+   public void updateMedication(Locale locale) throws Exception {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
       //First the admin has to select the Patient
-      viewPatientIds();
+      viewPatientIds(locale);
       System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient ID:");
+      System.out.println(resourceBundle.getString("enterId"));
       System.out.println("------------------------------------------------");
       try{
          int patientId = parseInt(br.readLine());
          if(checkPatientId.check(patientId)){
             //View patient medList
             //Then the admin has to select which Medicine he would like to update
-            viewMedications(dao.getPatientByid(patientId));
+            viewMedications(dao.getPatientByid(patientId), locale);
             System.out.println("------------------------------------------------");
-            System.out.println("Enter the Medication ID of the Medication you would like to update:");
+            System.out.println(resourceBundle.getString("eMedId")+" :");
             System.out.println("------------------------------------------------");
             int medId = parseInt(br.readLine());
             Medication originalMedicationData = medDao.getMedicationByMedId(medId);
 
             //Ask the admin if he wants to retain or change the values
             System.out.println("------------------------------------------------");
-            System.out.println("Current Medication Name: "+ originalMedicationData.getMedName());
+            System.out.println(resourceBundle.getString("cMName")+" : "+ originalMedicationData.getMedName());
             System.out.println("------------------------------------------------");
-            String medName = attributeChanger(originalMedicationData.getMedName(),"Medication Name");
+            String medName = attributeChanger(originalMedicationData.getMedName(),resourceBundle.getString("cMName"), locale);
 
             System.out.println("------------------------------------------------");
-            System.out.println("Current Medication Dosage: "+ originalMedicationData.getDosage());
+            System.out.println(resourceBundle.getString("cMDosage")+" : "+ originalMedicationData.getDosage());
             System.out.println("------------------------------------------------");
-            String dosage = attributeChanger(originalMedicationData.getDosage(),"Medication Dosage");
+            String dosage = attributeChanger(originalMedicationData.getDosage(),resourceBundle.getString("medDosage"), locale);
 
             System.out.println("------------------------------------------------");
-            System.out.println("Current Medication Manufacturer: "+ originalMedicationData.getManufacturer());
+            System.out.println(resourceBundle.getString("cMedManufacturer")+" : "+ originalMedicationData.getManufacturer());
             System.out.println("------------------------------------------------");
-            String manufacturer = attributeChanger(originalMedicationData.getManufacturer(),"Medication Manufacturer");
+            String manufacturer = attributeChanger(originalMedicationData.getManufacturer(),resourceBundle.getString("medManufacturer"), locale);
 
             System.out.println("------------------------------------------------");
-            System.out.println("Current Medication Type: "+ originalMedicationData.getMedType());
+            System.out.println(resourceBundle.getString("cMedType")+" : "+ originalMedicationData.getMedType());
             System.out.println("------------------------------------------------");
-            String medType = attributeChanger(originalMedicationData.getMedType(),"Medication Type");
+            String medType = attributeChanger(originalMedicationData.getMedType(),resourceBundle.getString("medType"), locale);
 
             //Store values and send to DB
             Medication medication = new Medication(medId, medName, dosage, manufacturer, patientId, medType);
             //If the Medication gets updated, status should return 1
             int status = medDao.updateMedication(medication);
             if(status ==1 ) {
-               System.out.println("Medication updated successfully");
+               System.out.println(resourceBundle.getString("mAddSucces"));
             }
             else {
-               System.out.println("ERROR while updating medication");
+               System.out.println(resourceBundle.getString("mAddError"));
             }
          } else {
             System.out.println("\n");
             System.out.println("\n");
-            System.out.println("Invalid PatientID");
+            System.out.println(resourceBundle.getString("invalidId"));
             System.out.println("\n");
             System.out.println("\n");
          }
       }catch (NumberFormatException ex) {
          System.out.println("---------------------");
-         System.out.println("Invalid input");
+         System.out.println(resourceBundle.getString("invalidInput"));
          System.out.println("---------------------");
       }
    }
    //This method helps the admin delete a patient from the DB by patientId
-   public void deletePatient() throws Exception {
-      viewPatientIds();
+   //i18n'd
+   public void deletePatient(Locale locale) throws Exception {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
+      viewPatientIds(locale);
       System.out.println("------------------------------------------------");
-      System.out.println("Enter the ID of the Patient you would like to delete:");
+      System.out.println(resourceBundle.getString("eIdToDelete")+":");
       System.out.println("------------------------------------------------");
       //If the patient gets deleted form the DB status should return 1
       try{
@@ -438,169 +467,183 @@ public class Admin {
          if(checkPatientId.check(patientId)){
             int status = dao.deletePatient(patientId);
             if(status == 1 ) {
-               System.out.println("Patient deleted successfully");
+               System.out.println(resourceBundle.getString("pDeleteSucces"));
             }
             else {
-               System.out.println("ERROR while deleting patient");
+               System.out.println(resourceBundle.getString("pDeleteError"));
             }
          } else {
             System.out.println("\n");
             System.out.println("\n");
-            System.out.println("Invalid PatientID");
+            System.out.println(resourceBundle.getString("invalidId"));
             System.out.println("\n");
             System.out.println("\n");
          }
       }catch (NumberFormatException ex) {
          System.out.println("---------------------");
-         System.out.println("Invalid input");
+         System.out.println(resourceBundle.getString("invalidInput"));
          System.out.println("---------------------");
       }
    }
    //This method helps the admin delete a medication from the DB by medId
-   public void deleteMedication() throws Exception {
+   //i18n'd
+   public void deleteMedication(Locale locale) throws Exception {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
       //First select the patient whose medication the Admin would to delete
-      viewPatientIds();
+      viewPatientIds(locale);
       System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient ID who's Medication(s) data you would like to delete:");
+      System.out.println(resourceBundle.getString("eIdToDeleteMed")+" :");
       System.out.println("------------------------------------------------");
       try{
          int patientId = parseInt(br.readLine());
          if(checkPatientId.check(patientId)){
             //View patient medList
-            viewMedications(dao.getPatientByid(patientId));
+            viewMedications(dao.getPatientByid(patientId), locale);
             System.out.println("------------------------------------------------");
-            System.out.println("Enter the Medication ID of the Medication you would like to delete:");
+            System.out.println(resourceBundle.getString("eMedIdToDelete")+" :");
             System.out.println("------------------------------------------------");
             int medId = parseInt(br.readLine());
             int status = medDao.deleteMedication(medId);
             //If the medication gets deleted from the DB status should return 1
             if(status == 1 ) {
-               System.out.println("Medication deleted successfully");
+               System.out.println(resourceBundle.getString("medDeleteSucces"));
             }
             else {
-               System.out.println("ERROR while deleting Medication");
+               System.out.println(resourceBundle.getString("medDeleteError"));
             }
          } else {
             System.out.println("\n");
             System.out.println("\n");
-            System.out.println("Invalid PatientID");
+            System.out.println(resourceBundle.getString("invalidId"));
             System.out.println("\n");
          }
          System.out.println("\n");
       }catch (NumberFormatException ex) {
          System.out.println("---------------------");
-         System.out.println("Invalid input");
+         System.out.println(resourceBundle.getString("invalidInput"));
          System.out.println("---------------------");
       }
    }
    //This method helps the admin lookup the credentials and medication of a Patient by patientId
-   public void searchPatient() throws Exception {
-      viewPatientIds();
+   //i18n'd
+   public void searchPatient(Locale locale) throws Exception {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
+      viewPatientIds(locale);
       System.out.println("------------------------------------------------");
-      System.out.println("Enter the ID of the Patient you would like to search:");
+      System.out.println(resourceBundle.getString("eIdToSearch")+" :");
       System.out.println("------------------------------------------------");
       try{
          int patientId = parseInt(br.readLine());
          if(checkPatientId.check(patientId)){
             Patient patient = dao.getPatientByid(patientId);
-            displayPatient(patient);
-            viewMedications(patient);
-            viewWeightData(patient);
+            displayPatient(patient, locale);
+            viewMedications(patient, locale);
+            viewWeightData(patient, locale);
          } else {
             System.out.println("\n");
             System.out.println("\n");
-            System.out.println("Invalid PatientID");
+            System.out.println(resourceBundle.getString("invalidId"));
             System.out.println("\n");
          }
          System.out.println("\n");
       }catch (NumberFormatException ex) {
          System.out.println("---------------------");
-         System.out.println("Invalid input");
+         System.out.println(resourceBundle.getString("invalidInput"));
          System.out.println("---------------------");
       }
    }
    //This method is used for the viewPatients methods
    //It just prints out the credentials of a patient
-   public void displayPatient(Patient patient) {
+   //i18n'd
+   public void displayPatient(Patient patient, Locale locale) {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
       int age = aC.calculateAge(patient.getDateOfBirth());
       double bmi = bC.calculateBMI(patient.getLength(), patient.getWeight());
-      String bmiCategory = bC.bmiCategory(bmi);
+      String bmiCategory = bC.bmiCategory(bmi, locale);
       System.out.println("-----------------------------------------------");
-      System.out.println("Patient credentials= ");
-      System.out.println("Patient ID: "+patient.getPatientId());
-      System.out.println("Patient Surname: "+patient.getSurName());
-      System.out.println("Patient Firstname: "+patient.getFirstName());
-      System.out.println("Patient Nickname: "+patient.getNickname());
-      System.out.println("Patient DateOfBirth: "+patient.getDateOfBirth());
-      System.out.println("Patient Age: "+age);
-      System.out.println("Patient Length: "+patient.getLength());
-      System.out.println("Patient Weight: "+patient.getWeight());
-      System.out.println("Patient BMI: "+bmi);
-      System.out.println("Patient BMI Category: "+bmiCategory);
+      System.out.println(resourceBundle.getString("pCreds")+" = ");
+      System.out.println(resourceBundle.getString("pId")+": "+patient.getPatientId());
+      System.out.println(resourceBundle.getString("pSur")+": "+patient.getSurName());
+      System.out.println(resourceBundle.getString("pFirst")+": "+patient.getFirstName());
+      System.out.println(resourceBundle.getString("pNick")+": "+patient.getNickname());
+      System.out.println(resourceBundle.getString("pDOB")+": "+patient.getDateOfBirth());
+      System.out.println(resourceBundle.getString("pAge")+": "+age);
+      System.out.println(resourceBundle.getString("pLen")+": "+patient.getLength());
+      System.out.println(resourceBundle.getString("pWeight")+": "+patient.getWeight());
+      System.out.println(resourceBundle.getString("pBMI")+": "+bmi);
+      System.out.println(resourceBundle.getString("pBMICat")+": "+bmiCategory);
       System.out.println("\n");
    }
    //This method is used for the viewPatientIds
    //Prints out the patientId, surname and firstname
-   public void displayPatientId(Patient patient) {
-      System.out.println("Patient ID: "+patient.getPatientId() +", Surname: "+patient.getSurName()+", Firstname: "+patient.getFirstName());
+   //i18n'd
+   public void displayPatientId(Patient patient, Locale locale) {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
+      System.out.println(resourceBundle.getString("pId")+": "+patient.getPatientId() +", "+ resourceBundle.getString("pSur") +": "+patient.getSurName()+","+ resourceBundle.getString("pFirst") +": "+patient.getFirstName());
       System.out.println("-----------------------------------------------");
    }
    //This method gets used in the viewMedications
    //This method displays the medication attribute values
-   public void displayMedication(Medication medication){
-      System.out.println("Medication ID: "+medication.getMedId());
-      System.out.println("Medication name: "+medication.getMedName());
-      System.out.println("Medication dosage: "+medication.getDosage());
-      System.out.println("Medication type: "+medication.getMedType());
-      System.out.println("Medication manufacturer: "+medication.getManufacturer());
+   //i18n'd
+   public void displayMedication(Medication medication, Locale locale){
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
+      System.out.println(resourceBundle.getString("medId")+": "+medication.getMedId());
+      System.out.println(resourceBundle.getString("medName")+": "+medication.getMedName());
+      System.out.println(resourceBundle.getString("medDosage")+": "+medication.getDosage());
+      System.out.println(resourceBundle.getString("medType")+": "+medication.getMedType());
+      System.out.println(resourceBundle.getString("medManufacturer")+": "+medication.getManufacturer());
    }
    //This method gets used in the searchPatient method and the viewPatientsAndMeds method
    //This method prints a list of the medications a given patient has
-   public void viewMedications(Patient patient){
-      System.out.println("Patient prescription(s)=");
+   //i18n'd
+   public void viewMedications(Patient patient, Locale locale){
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
+      System.out.println(resourceBundle.getString("pPrescriptions")+" :");
       List<Medication> medicationList = medDao.getAllMeds(patient.getPatientId());
       for(Medication medication: medicationList)
       {
          //display medication one by one
-         displayMedication(medication);
+         displayMedication(medication, locale);
          System.out.println("\n");
       }
       System.out.println("-----------------------------------------------");
    }
-
-   public String updateNickname(Patient patient, Patient patientOriginalData) throws IOException {
+   //i18n'd
+   public String updateNickname(Patient patient, Patient patientOriginalData, Locale locale) throws IOException {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
       System.out.println("------------------------------------------------");
-      System.out.println("Current Patient Nickname: "+patientOriginalData.getNickname());
+      System.out.println(resourceBundle.getString("cNick")+" : "+patientOriginalData.getNickname());
       System.out.println("------------------------------------------------");
-      String nickname = attributeChanger(patientOriginalData.getNickname(),"Nickname");
+      String nickname = attributeChanger(patientOriginalData.getNickname(),resourceBundle.getString("nick"), locale);
       patient.setNickname(nickname);
       int status = dao.updateNickname(patient);
       if(status ==1 ) {
-         System.out.println("Nickname updated successfully");
+         System.out.println(resourceBundle.getString("nickUpdateSucces"));
       }
       else {
-         System.out.println("ERROR while updating Nickname");
+         System.out.println(resourceBundle.getString("nickUpdateError"));
       }
       System.out.println("\n");
       return nickname;
    }
-
    //Add, update, search and delete weight functions down here
-   public void addWeight() throws Exception
+   //i18n'd
+   public void addWeight(Locale locale) throws Exception
    {
-      viewPatientIds();
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
+      viewPatientIds(locale);
       System.out.println("------------------------------------------------");
-      System.out.println("Enter PatientId");
+      System.out.println(resourceBundle.getString("enterId"));
       System.out.println("------------------------------------------------");
       try{
          int patientId = parseInt(br.readLine());
          if(checkPatientId.check(patientId)){
             System.out.println("------------------------------------------------");
-            System.out.println("Enter Patient Weight:");
+            System.out.println(resourceBundle.getString("ePWeight")+" :");
             System.out.println("------------------------------------------------");
             double weightTemp = Double.parseDouble(br.readLine());
             System.out.println("------------------------------------------------");
-            System.out.println("Enter Date of Weighing (YYYY-MM-DD):");
+            System.out.println(resourceBundle.getString("eDateWeighing")+" :");
             System.out.println("------------------------------------------------");
             String weightDateTemp = br.readLine();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -610,10 +653,10 @@ public class Admin {
                if (weightDate.isEqual(now)) {
                   int status = dao.updateWeight(patientId, weightTemp);
                   if(status ==1 ) {
-                     System.out.println("Weight updated successfully");
+                     System.out.println(resourceBundle.getString("wUpdateSucces"));
                   }
                   else {
-                     System.out.println("ERROR while updating Weight");
+                     System.out.println(resourceBundle.getString("wUpdateError"));
                   }
                }
             int weightId = 0;
@@ -621,132 +664,143 @@ public class Admin {
             //If the weight gets uploaded to the DB, status should return 1
             int status = weightDao.addWeight(weight);
                if(status ==1 ) {
-                  System.out.println("Weight data added successfully");
+                  System.out.println(resourceBundle.getString("wDataAddSucces"));
                }
                else {
-                  System.out.println("ERROR while adding weight Data");
+                  System.out.println(resourceBundle.getString("wDataAddError"));
                }
          } else {
             System.out.println("\n");
             System.out.println("\n");
-            System.out.println("Invalid PatientID");
+            System.out.println(resourceBundle.getString("invalidId"));
             System.out.println("\n");
          }
          System.out.println("\n");
       }catch (NumberFormatException ex) {
          System.out.println("---------------------");
-         System.out.println("Invalid input");
+         System.out.println(resourceBundle.getString("invalidInput"));
          System.out.println("---------------------");
       }
+      catch (DateTimeParseException ex){
+         System.out.println(resourceBundle.getString("wrongDateFormat"));
+      }
    }
-   public void displayWeightData(Weight weight){
-      System.out.println("Weight Data ID: "+weight.getWeightId());
-      System.out.println("Weight (kg's): "+weight.getWeight());
-      System.out.println("Weighing Date: "+weight.getWeightDate());
+   //i18n'd
+   public void displayWeightData(Weight weight, Locale locale){
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
+      System.out.println(resourceBundle.getString("wID")+" : "+weight.getWeightId());
+      System.out.println(resourceBundle.getString("weightWord")+" (KG's): "+weight.getWeight());
+      System.out.println(resourceBundle.getString("wDate")+" : "+weight.getWeightDate());
    }
-   public void viewWeightData(Patient patient){
-      System.out.println("Patient Weight Data= ");
+   //i18n'd
+   public void viewWeightData(Patient patient, Locale locale){
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
+      System.out.println(resourceBundle.getString("pWData")+" : ");
       List<Weight> weightList = weightDao.getAllWeightData(patient.getPatientId());
       for(Weight weight: weightList)
       {
          //display medication one by one
-         displayWeightData(weight);
+         displayWeightData(weight, locale);
          System.out.println("\n");
       }
       System.out.println("-----------------------------------------------");
    }
-   public void viewPatientsAndWeightData() {
+   //i18n'd
+   public void viewPatientsAndWeightData(Locale locale) {
       System.out.println("-----------------------------------------------");
       //Get all the patients from the DAO and store them
       List<Patient> patientList = dao.getAllPatients();
       for(Patient patient: patientList) {
          //display patient and their medication one by one
-         displayPatient(patient);
-         viewWeightData(patient);
+         displayPatient(patient, locale);
+         viewWeightData(patient, locale);
       }
       System.out.println("-----------------------------------------------");
       System.out.println("\n");
    }
-   public void viewPatientsAndAllData() {
+   //i18n'd
+   public void viewPatientsAndAllData(Locale locale) {
       System.out.println("-----------------------------------------------");
       //Get all the patients from the DAO and store them
       List<Patient> patientList = dao.getAllPatients();
       for(Patient patient: patientList) {
          //display patient and their medication one by one
-         displayPatient(patient);
-         viewMedications(patient);
-         viewWeightData(patient);
+         displayPatient(patient, locale);
+         viewMedications(patient, locale);
+         viewWeightData(patient, locale);
          System.out.println("><><><><><><><><><><><><><><><><><><><><><><><><");
       }
       System.out.println("-----------------------------------------------");
       System.out.println("\n");
    }
-
-   public void deleteWeight() throws Exception {
+   //i18n'd
+   public void deleteWeight(Locale locale) throws Exception {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
       //First select the patient whose weight data the Admin would to delete
-      viewPatientIds();
+      viewPatientIds(locale);
       System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient ID who's Weight data you would like to delete:");
+      System.out.println(resourceBundle.getString("ePIDToDeleteWeightData")+" :");
       System.out.println("------------------------------------------------");
       try{
          int patientId = parseInt(br.readLine());
          if(checkPatientId.check(patientId)){
             //View patient Weight Data list
-            viewWeightData(dao.getPatientByid(patientId));
+            viewWeightData(dao.getPatientByid(patientId), locale);
             System.out.println("------------------------------------------------");
-            System.out.println("Enter the Weight ID of the Weight Data you would like to delete:");
+            System.out.println(resourceBundle.getString("eWIDToDelete")+" :");
             System.out.println("------------------------------------------------");
             int weightId = parseInt(br.readLine());
             int status = weightDao.deleteWeight(weightId);
             //If the weight data gets deleted from the DB status should return 1
             if(status == 1 ) {
-               System.out.println("Weight deleted successfully");
+               System.out.println(resourceBundle.getString("wDeleteSucces"));
             }
             else {
-               System.out.println("ERROR while deleting Weight");
+               System.out.println(resourceBundle.getString("wDeleteError"));
             }
          } else {
             System.out.println("\n");
             System.out.println("\n");
-            System.out.println("Invalid PatientID");
+            System.out.println(resourceBundle.getString("invalidId"));
             System.out.println("\n");
          }
          System.out.println("\n");
       }catch (NumberFormatException ex) {
          System.out.println("---------------------");
-         System.out.println("Invalid input");
+         System.out.println(resourceBundle.getString("invalidInput"));
          System.out.println("---------------------");
       }
    }
    @SuppressWarnings("WrapperTypeMayBePrimitive")
-   public void updateWeight() throws Exception {
+   public void updateWeight(Locale locale) throws Exception {
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("res.bundle", locale);
       //First the admin has to select the Patient
-      viewPatientIds();
+      viewPatientIds(locale);
       System.out.println("------------------------------------------------");
-      System.out.println("Enter Patient ID:");
+      System.out.println(resourceBundle.getString("enterId"));
       System.out.println("------------------------------------------------");
       try{
          int patientId = parseInt(br.readLine());
          if(checkPatientId.check(patientId)){
             //View patient weight data
             //Then the admin has to select which Weight data he would like to update
-            viewWeightData(dao.getPatientByid(patientId));
+            viewWeightData(dao.getPatientByid(patientId), locale);
             System.out.println("------------------------------------------------");
-            System.out.println("Enter the Weight ID of the Weight Data you would like to update:");
+            System.out.println(resourceBundle.getString("eWIDToUpdate")+" :");
             System.out.println("------------------------------------------------");
             int weightId = parseInt(br.readLine());
             Weight originalWeightData = weightDao.getWeightByWeightId(weightId);
 
             //Ask the admin if he wants to retain or change the values
             System.out.println("------------------------------------------------");
-            System.out.println("Current Weight: "+ originalWeightData.getWeight());
+            System.out.println(resourceBundle.getString("cW")+" :"+ originalWeightData.getWeight());
             System.out.println("------------------------------------------------");
-            Double weightTemp = Double.parseDouble(attributeChanger(String.valueOf(originalWeightData.getWeight()),"Weight (kg's)"));
+            Double weightTemp = Double.parseDouble(attributeChanger(String.valueOf(originalWeightData.getWeight()),resourceBundle.getString("weightWord")+" (kg's)", locale));
 
             System.out.println("------------------------------------------------");
-            System.out.println("Current Weighing Date: "+ originalWeightData.getWeightDate());
+            System.out.println(resourceBundle.getString("cWeighingDate")+" :"+ originalWeightData.getWeightDate());
             System.out.println("------------------------------------------------");
-            String weightDateTemp = attributeChanger(String.valueOf(originalWeightData.getWeightDate()),"Weighing Date");
+            String weightDateTemp = attributeChanger(String.valueOf(originalWeightData.getWeightDate()),resourceBundle.getString("wDate"), locale);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate weightDate = LocalDate.parse(weightDateTemp, formatter);
 
@@ -756,21 +810,21 @@ public class Admin {
             //If the Medication gets updated, status should return 1
             int status = weightDao.updateWeightData(weight);
             if(status ==1 ) {
-               System.out.println("Weight Data updated successfully");
+               System.out.println(resourceBundle.getString("wUpdateSucces"));
             }
             else {
-               System.out.println("ERROR while updating Weight Data!");
+               System.out.println(resourceBundle.getString("wDataAddSucces"));
             }
          } else {
             System.out.println("\n");
             System.out.println("\n");
-            System.out.println("Invalid PatientID");
+            System.out.println(resourceBundle.getString("invalidId"));
             System.out.println("\n");
          }
          System.out.println("\n");
       }catch (NumberFormatException ex) {
          System.out.println("---------------------");
-         System.out.println("Invalid input");
+         System.out.println(resourceBundle.getString("invalidInput"));
          System.out.println("---------------------");
       }
    }
