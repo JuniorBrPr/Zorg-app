@@ -67,6 +67,7 @@ public class Admin {
          System.out.println("O. "+resourceBundle.getString("viewAllData"));
          System.out.println("P. "+resourceBundle.getString("viewGraph"));
          System.out.println("-----------------");
+         System.out.println("Q. . "+resourceBundle.getString("changeLanguage"));
          System.out.println("F. "+resourceBundle.getString("exit"));
          System.out.println("<><><><><><><><><><><><>");
          System.out.println(resourceBundle.getString("enterOption"));
@@ -90,6 +91,10 @@ public class Admin {
             case "N" -> viewPatientsAndWeightData(locale);
             case "O" -> viewPatientsAndAllData(locale);
             case "P" -> viewPatientWeightGraph(locale);
+            case "Q" -> {
+             LanguagePicker lanPick = new LanguagePicker();
+             lanPick.lanChanger("admin", 0);
+            }
             case "F" -> {
                System.out.println(resourceBundle.getString("gbye"));
                System.exit(0);

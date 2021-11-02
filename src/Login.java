@@ -56,7 +56,7 @@ public class Login {
                 }else{
                     if(checkPatientId.check(userID)){
                         Connection conn = dB.getConnection();
-                        PreparedStatement ps = conn.prepareStatement("SELECT * FROM weight WHERE patientId = ?");
+                        PreparedStatement ps = conn.prepareStatement("SELECT * FROM patient WHERE patientId = ?");
                         ps.setInt(1, userID);
                         ResultSet rs = ps.executeQuery();
                         if (rs.next()) {

@@ -25,6 +25,8 @@ public class patientScreen {
             System.out.println("B. "+resourceBundle.getString("changeNick"));
             System.out.println("C. "+resourceBundle.getString("viewMedData"));
             System.out.println("D. "+resourceBundle.getString("viewWGraph"));
+            System.out.println("<><><><><><><><><><><><>");
+            System.out.println("Y. "+resourceBundle.getString("changeLanguage"));
             System.out.println("Z. "+resourceBundle.getString("logout"));
             System.out.println("F. "+resourceBundle.getString("exit"));
             option = br.readLine();
@@ -39,6 +41,10 @@ public class patientScreen {
                 case "D" -> {
                     adminFunc.weightGraph(patientId, locale);
                     adminFunc.viewWeightData(dao.getPatientByid(patientId), locale);
+                }
+                case "Y" -> {
+                    LanguagePicker lanPick = new LanguagePicker();
+                    lanPick.lanChanger("patient", patientId);
                 }
                 case "Z" -> option = "Z";
                 case "F" -> {
